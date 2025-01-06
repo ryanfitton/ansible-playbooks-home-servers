@@ -1,0 +1,22 @@
+---
+# Handler to handle common notifications. Handlers are called by other plays.
+# See http://docs.ansible.com/playbooks_intro.html for more information about handlers.
+
+- name: restart ssh
+  become: true
+  ansible.builtin.systemd:
+    name: sshd
+    state: restarted
+  listen: restart ssh
+
+- name: reload ssh
+  become: true
+  ansible.builtin.systemd:
+    name: sshd
+    state: reloaded
+
+- name: restart ntp
+  become: true
+  ansible.builtin.service:
+    name: ntpd
+    state: restarted

@@ -1,0 +1,7 @@
+---
+# Include all playbooks
+
+
+- import_playbook: commissioning.yaml
+- import_playbook: configuration.yaml
+- import_playbook: restart.yaml

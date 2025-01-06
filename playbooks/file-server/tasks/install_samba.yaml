@@ -1,0 +1,39 @@
+---
+# This will install and configure Samba
+
+- name: Install Samba-related packages are installed.
+  become: true
+  apt:
+    name:
+      - samba
+      - samba-common
+    state: present
+    update_cache: yes
+
+- name: Install Samba VFS extensions packages
+  become: true
+  package:
+    name:
+      - samba-vfs-modules
+    state: present
+  tags: samba
+
+- name: Create username map file if needed
+  become: true
+  template:
+    dest: "{{ samba_username_map_file }}"
+    src: smbusers
+  when: users is defined              # `users` from `group_vars/all.yaml`
+  tags: samba
+
+- name: Ensure Samba is running and set to start on boot.
+  become: true
+  changed_when: true
+  service:
+    name: "{{ samba_service }}"
+    state: started
+    enabled: true
+  notify: start samba
+
+- name: "Force all notified handlers to run at this point, not waiting for normal sync points"
+  ansible.builtin.meta: flush_handlers

@@ -1,0 +1,28 @@
+---
+samba_shares_root: "/datastore"
+samba_www_documentroot: "/var/www/samba"
+
+# List of share directories, these will be stored inside `samba_shares_root`
+# Locations with disk from Hypervisor
+samba_shares:
+  - name: "nasdata"
+    comment: "Shared media library. Music, Photos and Video."
+    path: "{{ samba_shares_root }}/nasdata/"
+    owner: "root"
+    group: "users"
+    read_only: "no"
+    browseable: "yes"
+    writable: "yes"
+    create_mask: "0777"
+    create_mode: "0777"
+    force_create_mode: "0777"
+    directory_mask: "0777"
+    directory_mode: "0777"
+    force_directory_mode: "0777"
+    setype: "samba_share_t"
+
+# Configuration locations
+samba_service: "smbd"
+samba_configuration_dir: /etc/samba
+samba_configuration: "{{ samba_configuration_dir }}/smb.conf"
+samba_username_map_file: "{{ samba_configuration_dir }}/smbusers"

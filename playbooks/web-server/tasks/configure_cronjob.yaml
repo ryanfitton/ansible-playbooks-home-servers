@@ -1,0 +1,30 @@
+---
+# This will setup Cronjobs on the server
+
+- name: Copy the Nginx service check file for the Cronjob
+  become: true
+  ansible.builtin.template:
+    src: service_check_nginx.sh
+    dest: "/service_check_nginx.sh"
+    mode: a+x
+
+- name: Setup Nginx service check Cronjob
+  become: true
+  ansible.builtin.cron:
+    name: "Nginx service check Cronjob"
+    minute: "0"
+    job: "/service_check_nginx.sh"
+
+- name: Copy the PHP service check file for the Cronjob
+  become: true
+  ansible.builtin.template:
+    src: service_check_php.sh
+    dest: "/service_check_php.sh"
+    mode: a+x
+
+- name: Setup PHP service check Cronjob
+  become: true
+  ansible.builtin.cron:
+    name: "PHP service check Cronjob"
+    minute: "0"
+    job: "/service_check_php.sh"

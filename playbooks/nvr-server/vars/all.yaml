@@ -1,0 +1,7 @@
+---
+# Shared media locations with disk from Hypervisor
+media_root: "/datastore/cctvdata/"
+
+# Frigate system user details
+frigate_user: frigate
+frigate_group: root

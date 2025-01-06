@@ -1,0 +1,10 @@
+---
+# This will restart Nginx
+
+- name: Restart Nginx
+  become: true
+  changed_when: true
+  ansible.builtin.debug:
+    msg: "{{ ansible_host }}: Restarting Nginx"
+  notify:
+    - restart nginx

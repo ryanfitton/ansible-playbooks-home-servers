@@ -1,0 +1,42 @@
+---
+# This will install UniFI Network Controller
+
+# This will setup the required packages for UniFi
+# Follows the steps defined here: https://help.ui.com/hc/en-us/articles/360012282453-Self-Hosting-a-UniFi-Network-Server
+# And: https://www.reddit.com/r/UNIFI/comments/1deaeoj/how_to_guide_installing_unifi_network_application/
+
+- name: Install required pre-prerequisite paclages
+  become: true
+  ansible.builtin.apt:
+    name:
+      - gnupg
+      - curl
+      - ca-certificates
+      - apt-transport-https
+    state: present
+    update_cache: yes
+
+- name: Install MongoDB
+  become: true
+  shell: curl -fsSL https://www.mongodb.org/static/pgp/server-7.0.asc | gpg -o /usr/share/keyrings/mongodb-server-7.0.gpg --dearmor | echo "deb [ arch=amd64 signed-by=/usr/share/keyrings/mongodb-server-7.0.gpg ] http://repo.mongodb.org/apt/debian bookworm/mongodb-org/7.0 main" | tee /etc/apt/sources.list.d/mongodb-org-7.0.list
+
+- name: Add Unifi GPG key and repository
+  become: true
+  shell: curl -fsSL https://dl.ui.com/unifi/unifi-repo.gpg | gpg -o /usr/share/keyrings/unifi-repo.gpg --dearmor | echo 'deb [ arch=amd64 signed-by=/usr/share/keyrings/unifi-repo.gpg ] https://www.ui.com/downloads/unifi/debian stable ubiquiti' | tee /etc/apt/sources.list.d/unifi.list
+
+- name: Update sources
+  become: true
+  shell: apt-get update
+
+- name: Update repositories cache and install "{{ unifi_service }}" package
+  become: true
+  ansible.builtin.apt:
+    name:
+      - mongodb-org
+      - unifi
+    state: present
+    update_cache: yes
+  notify: start unifi
+
+- name: "Force all notified handlers to run at this point, not waiting for normal sync points"
+  ansible.builtin.meta: flush_handlers

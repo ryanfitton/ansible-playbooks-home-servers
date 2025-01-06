@@ -1,0 +1,10 @@
+---
+# This will restart PHP
+
+- name: Restart PHP
+  become: true
+  changed_when: true
+  ansible.builtin.debug:
+    msg: "{{ ansible_host }}: Restarting PHP"
+  notify:
+    - restart php

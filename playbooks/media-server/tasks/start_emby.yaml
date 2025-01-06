@@ -1,0 +1,10 @@
+---
+# This will start Emby
+
+- name: Start Emby
+  become: true
+  changed_when: true
+  ansible.builtin.debug:
+    msg: "{{ ansible_host }}: Starting Emby"
+  notify:
+    - start emby

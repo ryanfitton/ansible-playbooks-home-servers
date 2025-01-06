@@ -1,0 +1,17 @@
+---
+# .deb install package
+# Download from: https://emby.media/linux-server.html
+emby_deb_package: | 
+  "{{ 'https://github.com/MediaBrowser/Emby.Releases/releases/download/4.8.10.0/emby-server-deb_4.8.10.0_arm64.deb' if ansible_architecture == 'arm64' }}"
+  "{{ 'https://github.com/MediaBrowser/Emby.Releases/releases/download/4.8.10.0/emby-server-deb_4.8.10.0_arm64.deb' if ansible_architecture == 'aarch64' }}"
+  "{{ 'https://github.com/MediaBrowser/Emby.Releases/releases/download/4.8.10.0/emby-server-deb_4.8.10.0_amd64.deb' if ansible_architecture == 'x86_64' }}"
+
+# Shared media locations with disk from Hypervisor
+media_root: "/datastore/mediadata/"
+
+# Emby service
+emby_service: emby-server
+
+# Emby system user details
+emby_user: emby
+emby_group: root

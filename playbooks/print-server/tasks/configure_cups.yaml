@@ -1,0 +1,58 @@
+---
+# This will configure the printer with Cups
+
+- name: Create CUPS Management user groups '{{ cups_management_user_groups }}'
+  become: true
+  ansible.builtin.group:
+    name: "{{ item }}"
+    state: present
+  loop: "{{ cups_management_user_groups }}"
+
+- name: Create CUPS Management user
+  become: true
+  ansible.builtin.user:
+    name: "{{ cups_management_user }}"
+    state: present
+    password: "{{ cups_management_user_password | string | password_hash('sha512') }}"
+    shell: /bin/bash
+    system: yes             # Defaults to yes
+    createhome: yes        # Defaults to yes
+
+- name: Add CUPS Management user to groups
+  become: true
+  user:
+    name: '{{ cups_management_user }}'
+    groups: "{{ item }}"
+    append: yes
+  loop: "{{ cups_management_user_groups }}"
+
+- name: Allow CUPS management groups to have passwordless sudo
+  become: true
+  lineinfile:
+    dest: /etc/sudoers
+    state: present
+    regexp: "^%{{ item }}"
+    line: "%{{ item }} ALL=(ALL) NOPASSWD: ALL"
+    validate: visudo -cf %s
+  loop: "{{ cups_management_user_groups }}"
+
+# - name: Copy over CUPS configuration template
+#   become: true
+#   template:
+#     src: cupsd.conf
+#     dest: "{{ cups_configuration }}"
+#     mode: "0640"
+
+# - name: Copy over CUPS Printer configuration template
+#   become: true
+#   template:
+#     src: cupsd.conf
+#     dest: "{{ cups_printer_configuration }}"
+#     mode: "0640"
+
+- name: Setup CUPS to allow remote admin, from any address and ability to share printers
+  become: true
+  changed_when: true
+  shell: "{{ cups_ctl_service }} --remote-admin --remote-any --share-printers --user-cancel-any"
+  notify:
+    - restart cups

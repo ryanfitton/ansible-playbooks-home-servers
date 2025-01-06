@@ -1,0 +1,25 @@
+server {
+    {% block server_begin %}{% endblock %}
+
+    {% block server_basic -%}
+    listen 80;
+{% if nginx_listen_ipv6|default(false) %}
+    listen       [::]:80;
+{% endif %}
+
+    server_name someothernamehere.com;
+
+    root {{ nginx_web_root_path }}/someothernamehere.com;
+
+    index "index.html index.htm";
+
+    # error_page: ""
+    # access_log: ""
+    # error_log: ""
+
+    {% endblock %}
+
+    {% block server_end %}{% endblock %}
+
+    # Add any other custom options below
+}

@@ -1,0 +1,21 @@
+---
+# This playbook deploys the whole application stack in this site.
+# https://docs.ansible.com/ansible/latest/inventory_guide/intro_patterns.html
+
+
+- name: Start Cups on Print-Server
+  hosts: PrintServers
+
+  vars_files:
+    - ../../groups_vars/all.yaml
+    - vars/all.yaml
+
+#  roles:
+#    - role: print-server
+
+  tasks:
+    - include_tasks: tasks/start_cups.yaml
+      tags: ['cups']
+
+  handlers:
+    - import_tasks: handlers/main.yaml

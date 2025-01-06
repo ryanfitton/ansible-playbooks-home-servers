@@ -1,0 +1,10 @@
+---
+# This will start Samba
+
+- name: Start Samba
+  become: true
+  changed_when: true
+  ansible.builtin.debug:
+    msg: "{{ ansible_host }}: Starting Samba"
+  notify:
+    - start samba

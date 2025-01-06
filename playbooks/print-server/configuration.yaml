@@ -1,0 +1,23 @@
+---
+# This playbook deploys the whole application stack in this site.
+# https://docs.ansible.com/ansible/latest/inventory_guide/intro_patterns.html
+
+
+- name: Configure Print-Server
+  hosts: PrintServers
+
+  vars_files:
+    - ../../groups_vars/all.yaml
+    - vars/all.yaml
+
+#  roles:
+#    - role: print-server
+
+  tasks:
+    - include_tasks: tasks/configure_cups.yaml
+      tags: ['cups']
+    - include_tasks: tasks/configure_cronjob.yaml
+      tags: ['cron']
+
+  handlers:
+    - import_tasks: handlers/main.yaml

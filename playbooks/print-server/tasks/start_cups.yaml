@@ -1,0 +1,10 @@
+---
+# This will start Cups
+
+- name: Start Cups
+  become: true
+  changed_when: true
+  ansible.builtin.debug:
+    msg: "{{ ansible_host }}: Starting Cups"
+  notify:
+    - start cups

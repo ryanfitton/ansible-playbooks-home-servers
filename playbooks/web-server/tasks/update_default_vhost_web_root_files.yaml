@@ -1,0 +1,38 @@
+---
+# This configure the default vhost www files
+
+- name: Ensure default vhost www path exists
+  become: true
+  file:
+    path: "{{ nginx_web_root_default }}"
+    state: directory
+    mode: 0755
+
+- name: Remove all default vhost www files
+  become: true
+  shell: rm -rf {{ nginx_web_root_default }}/*
+
+- name: Install Git
+  become: true
+  apt:
+    name:
+      - git
+    state: present
+    update_cache: yes
+
+- name: Clone Git repo
+  become: true
+  ansible.builtin.git:
+    repo: "https://github.com/ryanfitton/hiccup-start-page-home-control.git"
+    dest: "{{ nginx_web_root_default }}"
+    force: yes
+    separate_git_dir: "/tmp/hiccup-start-page-home-control.git"
+
+- name: Copy the config file for Hiccup
+  become: true
+  ansible.builtin.template:
+    src: vhost.default.hiccup.config.json
+    dest: "{{ nginx_web_root_default }}/config.json"
+    mode: "0644"
+    decrypt: yes  # Decrypt as this is an Ansible vault encrypted file
+  notify: reload nginx

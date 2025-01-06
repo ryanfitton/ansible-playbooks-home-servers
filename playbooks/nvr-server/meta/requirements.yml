@@ -1,0 +1,10 @@
+---
+# Role Requirements
+
+roles:
+  - name: tigattack.frigate_docker
+  - name: geerlingguy.docker
+
+collections:
+  - name: community.docker
+    version: 4.1.0

@@ -1,0 +1,18 @@
+---
+# Emby system user details
+cups_management_user : print
+cups_management_user_password : print
+cups_management_user_groups: 
+  - "cups_admins"
+  - "sudo"
+  - "lp"
+  - "lpadmin"
+
+# Configuration locations
+cups_configuration_dir: /etc/cups
+cups_configuration: "{{ cups_configuration_dir }}/cupsd.conf"
+cups_printer_configuration: "{{ cups_configuration_dir }}/printers.conf"
+
+# Cups services
+cups_service: cups
+cups_ctl_service: cupsctl

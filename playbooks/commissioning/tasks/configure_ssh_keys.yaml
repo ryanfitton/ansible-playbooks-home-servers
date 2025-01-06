@@ -1,0 +1,109 @@
+---
+# This will configure ssh keys for the node
+
+
+# ----------------------------------------------------------------------------------
+# Changing login details - Configure Ansible to not use a Private SSH Key file for the `{{ management_user }}` as they're not installed just yet
+# ----------------------------------------------------------------------------------
+- name: Changing login details - Configure Ansible to not use a Private SSK Key file for the `{{ management_user }}` as they're not installed just yet
+  set_fact:
+    ansible_ssh_private_key_file: ''
+
+
+# ----------------------------------------------------------------------------------
+# Copy over SSH Keys for Management users
+# ----------------------------------------------------------------------------------
+- name: Create ssh folder for Management user
+  become: true
+  ansible.builtin.file:
+    path: "/home/{{ management_user }}/.ssh"
+    state: directory
+    owner: "{{ management_user }}"
+    group: "{{ management_user }}"
+    mode: 0700
+    
+- name: Copy public key into Management users home directory
+  become: true
+  ansible.builtin.copy:
+    src: "{{ management_user_ssh_public_key }}"
+    dest: "/home/{{ management_user }}/.ssh/id_rsa.pub"
+    owner: "{{ management_user }}"
+    group: "{{ management_user }}"
+    mode: 0644
+
+- name: Set authorized key from value in the copied `id_rsa.pub` file
+  become: true
+  shell: cat  /home/{{ management_user }}/.ssh/id_rsa.pub >> /home/{{ management_user }}/.ssh/authorized_keys
+
+
+# ----------------------------------------------------------------------------------
+# Copy over SSH Keys for standard users
+# ----------------------------------------------------------------------------------
+- name: Create ssh folder for users
+  become: true
+  ansible.builtin.file:
+    path: "/home/{{ item.username }}/.ssh"
+    state: directory
+    mode: 0700
+    owner: "{{ item.username }}"
+    group: "{{ item.username }}"
+  with_items: "{{ users }}"
+
+- name: Copy public keys into each user's home directory
+  become: true
+  ansible.builtin.copy:
+    src: "{{ item.ssh_public_key }}"
+    dest: "/home/{{ item.username }}/.ssh/id_rsa.pub"
+    mode: 0644
+    owner: "{{ item.username }}"
+    group: "{{ item.username }}"
+  with_items: "{{ users }}"
+
+- name: Set authorized key from value in the copied `id_rsa.pub` file for each user
+  become: true
+  shell: cat  /home/{{ item.username }}/.ssh/id_rsa.pub >> /home/{{ item.username }}/.ssh/authorized_keys
+  with_items: "{{ users }}"
+  notify: restart ssh  # Perform a final restart of ssh
+
+
+# ----------------------------------------------------------------------------------
+# Update SSH settings to allow logins via SSH keys
+# ----------------------------------------------------------------------------------
+- name: Allow public key authentication for SSH
+  become: true
+  lineinfile:
+    dest: /etc/ssh/sshd_config
+    regexp: '^PubkeyAuthentication'
+    line: "PubkeyAuthentication yes"
+    state: present
+    backup: yes
+  notify: restart ssh 
+
+
+# ----------------------------------------------------------------------------------
+# Update SSH settings to prevent passwords being used and to only allow SSH keys
+# ----------------------------------------------------------------------------------
+- name: Configure SSH to disable use of Password authentication
+  become: true
+  lineinfile:
+    dest: /etc/ssh/sshd_config
+    regexp: '^PasswordAuthentication'
+    line: "PasswordAuthentication no"
+    state: present
+    backup: yes
+  notify: restart ssh  # Perform a final restart of ssh
+
+# Remove cloud-init config file introduced in Ubuntu 22.10 or later. This prevents publickey auth from working
+# https://github.com/geerlingguy/ansible-role-security/pull/124/files
+# https://github.com/geerlingguy/ansible-role-security/issues/117
+- name: Ensure cloud-init conf does not still allow passwords by removing an a config file include
+  become: true
+  changed_when: true
+  lineinfile:
+    dest: "/etc/ssh/sshd_config.d/50-cloud-init.conf"
+    regexp: "^PasswordAuthentication"
+    state: absent
+  notify: restart ssh  # Perform a final restart of ssh
+
+- name: "Force all notified handlers to run at this point, not waiting for normal sync points"
+  ansible.builtin.meta: flush_handlers

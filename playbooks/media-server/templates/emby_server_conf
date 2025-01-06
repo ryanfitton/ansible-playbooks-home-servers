@@ -1,0 +1,2 @@
+EMBY_USER={{ emby_user }}
+EMBY_GROUP={{ emby_group }}

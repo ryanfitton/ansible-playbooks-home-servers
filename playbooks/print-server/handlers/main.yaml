@@ -1,0 +1,21 @@
+---
+# Handler to handle common notifications. Handlers are called by other plays.
+# See http://docs.ansible.com/playbooks_intro.html for more information about handlers.
+
+- name: start cups
+  become: true
+  ansible.builtin.service:
+    name: "{{ cups_service }}"
+    state: started
+
+- name: restart cups
+  become: true
+  ansible.builtin.service:
+    name: "{{ cups_service }}"
+    state: restarted
+
+- name: stop cups
+  become: true
+  ansible.builtin.service:
+    name: "{{ cups_service }}"
+    state: stopped

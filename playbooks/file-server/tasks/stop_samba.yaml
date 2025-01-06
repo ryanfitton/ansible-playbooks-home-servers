@@ -1,0 +1,10 @@
+---
+# This will stop Samba
+
+- name: Stop Samba
+  become: true
+  changed_when: true
+  ansible.builtin.debug:
+    msg: "{{ ansible_host }}: Stopping Samba"
+  notify:
+    - stop samba

@@ -1,0 +1,7 @@
+---
+# This will configure the hostname from what is defined in `inventory.yaml`
+
+- name: Set a hostname
+  become: true
+  ansible.builtin.hostname:
+    name: '{{ hostname_prefix }}{{ inventory_hostname }}{{ hostname_suffix }}'

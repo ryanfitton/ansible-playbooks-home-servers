@@ -1,0 +1,21 @@
+---
+# This playbook deploys the whole application stack in this site.
+# https://docs.ansible.com/ansible/latest/inventory_guide/intro_patterns.html
+
+
+- name: Start Media on Media-Server
+  hosts: MediaServers
+
+  vars_files:
+    - ../../groups_vars/all.yaml
+    - vars/all.yaml
+
+#  roles:
+#    - role: media-server
+
+  tasks:
+    - include_tasks: tasks/start_emby.yaml
+      tags: ['emby']
+
+  handlers:
+    - import_tasks: handlers/main.yaml

@@ -1,0 +1,23 @@
+---
+# Handler to handle common notifications. Handlers are called by other plays.
+# See http://docs.ansible.com/playbooks_intro.html for more information about handlers.
+
+- name: stop unifi
+  ansible.builtin.service:
+    name: "{{ unifi_service }}"
+    state: stopped
+
+- name: start unifi
+  ansible.builtin.service:
+    name: "{{ unifi_service }}"
+    state: started
+
+- name: restart unifi
+  ansible.builtin.service:
+    name: "{{ unifi_service }}"
+    state: restarted
+
+- name: ststus unifi
+  ansible.builtin.service:
+    name: "{{ unifi_service }}"
+    state: status

@@ -1,0 +1,83 @@
+---
+
+# Nginx Vhost setup
+- name: Ensure nginx_vhost_path exists
+  become: true
+  file:
+    path: "{{ nginx_path }}/sites-enabled"
+    state: directory
+    mode: 0755
+  notify: reload nginx
+
+- name: Remove default nginx vhost config file (if configured)
+  become: true
+  file:
+    path: "{{ nginx_path }}/sites-enabled/default"
+    state: absent
+  notify: restart nginx
+
+# Add the 'vhost.default' config file from 'templates'
+- name: Add default custom vhost config files
+  become: true
+  template:
+    src: "vhost.default"
+    dest: "{{ nginx_path }}/sites-enabled/vhost.default.conf"
+    force: true
+    owner: root
+    group: "root"
+    mode: 0644
+  notify: reload nginx
+
+# Add another custom vhost file
+# - name: Add someothernamehere vhost config files.
+#   become: true
+#   template:
+#     src: "vhost.someothernamehere"
+#     dest: "{{ nginx_path }}/sites-enabled/vhost_someothernamehere.conf"
+#     force: true
+#     owner: root
+#     group: "root"
+#     mode: 0644
+#   notify: reload nginx
+
+- name: Remove legacy vhosts.conf file.
+  become: true
+  file:
+    path: "{{ nginx_path }}/sites-enabled/vhosts.conf"
+    state: absent
+  notify: reload nginx
+
+
+# Nginx configuration setup
+- name: Copy nginx configuration in place.
+  changed_when: false
+  become: true
+  template:
+    src: "nginx.conf"
+    dest: "{{ nginx_path }}/nginx.conf"
+    owner: root
+    group: "root"
+    mode: 0644
+  notify:
+    - restart nginx
+    - reload nginx
+
+- name: Test nginx configuration
+  become: true
+  changed_when: false
+  command: nginx -t -c {{ nginx_path }}/nginx.conf
+  register: nginx_test_result
+  failed_when: "nginx_test_result.rc != 0"
+  notify:
+    - restart nginx
+    - reload nginx
+
+- name: Restarting Nginx and PHP
+  become: true
+  changed_when: true
+  ansible.builtin.debug:
+    msg: "{{ ansible_host }}: Restarting Nginx and PHP"
+  notify:
+    - restart php
+    - restart nginx
+    - reload nginx

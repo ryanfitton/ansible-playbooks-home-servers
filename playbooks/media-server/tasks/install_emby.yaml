@@ -1,0 +1,54 @@
+---
+# This will install Emby
+
+# This will setup the required packages for Ubuntu
+
+# Add the user with a primary group
+- name: Create group for Emby
+  become: true
+  ansible.builtin.group:
+    name: "{{ emby_group }}"
+    state: present
+
+# Add the user with a primary group
+- name: Create user for Emby
+  become: true
+  ansible.builtin.user:
+    name: "{{ emby_user }}"
+    comment: "{{ emby_service }} user"
+    state: present
+    group: "{{ emby_group }}"
+    shell: /bin/bash
+    system: yes
+    createhome: yes
+    
+- name: Create Media root directory
+  become: true
+  file:
+    state: directory
+    path: "{{ media_root }}"
+    owner: "{{ emby_user }}"
+    group: "{{ emby_group }}"
+    mode: '0755'
+
+- name: Download Emby package
+  debug:
+    msg: "Architecture: `{{ ansible_architecture }}`. Download: `{{ emby_deb_package | replace('\n', '') | replace('\"', '') }}`"
+
+- name: Install Emby from .deb package
+  become: true
+  apt:
+    deb: "{{ emby_deb_package | replace('\n', '') | replace('\"', '') }}"
+    update_cache: yes
+
+- name: Update {{ emby_service }} configuration file
+  become: true
+  changed_when: true
+  blockinfile:
+    dest: /etc/{{ emby_service }}.conf
+    block: "{{ lookup('template', 'templates/emby_server_conf') }}"
+    marker: "#{mark} ANSIBLE MANAGED BLOCK"
+  notify: restart emby
+
+- name: "Force all notified handlers to run at this point, not waiting for normal sync points"
+  ansible.builtin.meta: flush_handlers

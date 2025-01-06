@@ -1,0 +1,60 @@
+---
+# Handler to handle common notifications. Handlers are called by other plays.
+# See http://docs.ansible.com/playbooks_intro.html for more information about handlers.
+
+- name: start nginx
+  become: true
+  ansible.builtin.service:
+    name: "{{ nginx_service }}"
+    state: started
+
+- name: restart nginx
+  become: true
+  ansible.builtin.service:
+    name: "{{ nginx_service }}"
+    state: restarted
+
+- name: stop nginx
+  become: true
+  ansible.builtin.service:
+    name: "{{ nginx_service }}"
+    state: stopped
+
+- name: reload nginx
+  become: true
+  ansible.builtin.service:
+    name: "{{ nginx_service }}"
+    state: reloaded
+
+
+- name: start php
+  become: true
+  # ansible.builtin.service:
+  #   name: "{{ php_service }}"
+  #   state: started
+  ansible.builtin.debug:
+    msg: "{{ ansible_host }}: PHP-FPM start disabled"
+
+- name: restart php
+  become: true
+  # ansible.builtin.service:
+  #   name: "{{ php_service }}"
+  #   state: restarted
+  ansible.builtin.debug:
+    msg: "{{ ansible_host }}: PHP-FPM restart disabled"
+
+- name: stop php
+  become: true
+  # ansible.builtin.service:
+  #   name: "{{ php_service }}"
+  #   state: stopped
+  ansible.builtin.debug:
+    msg: "{{ ansible_host }}: PHP-FPM stop disabled"
+
+- name: reload php
+  become: true
+  # ansible.builtin.service:
+  #   name: "{{ php_service }}"
+  #   state: reloaded
+  ansible.builtin.debug:
+    msg: "{{ ansible_host }}: PHP-FPM reload disabled"

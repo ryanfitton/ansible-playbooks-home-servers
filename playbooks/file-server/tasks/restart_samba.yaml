@@ -1,0 +1,10 @@
+---
+# This will restart Samba
+
+- name: Restart Samba
+  become: true
+  changed_when: true
+  ansible.builtin.debug:
+    msg: "{{ ansible_host }}: Restarting Samba"
+  notify:
+    - restart samba

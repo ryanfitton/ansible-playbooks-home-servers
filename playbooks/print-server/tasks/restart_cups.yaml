@@ -1,0 +1,10 @@
+---
+# This will restart Cups
+
+- name: Restart Cups
+  become: true
+  changed_when: true
+  ansible.builtin.debug:
+    msg: "{{ ansible_host }}: Restarting Cups"
+  notify:
+    - restart cups

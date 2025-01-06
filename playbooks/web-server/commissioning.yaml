@@ -1,0 +1,23 @@
+---
+# This playbook deploys the whole application stack in this site.
+# https://docs.ansible.com/ansible/latest/inventory_guide/intro_patterns.html
+
+
+- name: Commission Web-Server
+  hosts: WebServers
+
+  vars_files:
+    - ../../groups_vars/all.yaml
+    - vars/all.yaml
+
+#   roles:
+#     - role: web-server
+
+  tasks:
+    - include_tasks: tasks/install_php.yaml
+      tags: ['php']
+    - include_tasks: tasks/install_nginx.yaml
+      tags: ['nginx']
+  
+  handlers:
+    - import_tasks: handlers/main.yaml

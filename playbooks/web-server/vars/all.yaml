@@ -1,0 +1,14 @@
+---
+# Nginx details
+nginx_service : "nginx"
+nginx_user : "www-data"
+nginx_path : "/etc/nginx"
+nginx_log_path : "/var/log/nginx"
+nginx_web_root_path : "/var/www"
+nginx_web_root_default : "{{ nginx_web_root_path }}/default"
+
+# PHP details
+php_service : "php8.3-fpm"
+php_path : "/etc/php/8.3/fpm"
+php_ini : "{{ php_path }}/php.ini"
+php_sock : "unix:/var/run/php/php8.3-fpm.sock"

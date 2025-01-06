@@ -1,0 +1,23 @@
+---
+# This playbook deploys the whole application stack in this site.
+# https://docs.ansible.com/ansible/latest/inventory_guide/intro_patterns.html
+
+
+- name: Configure File-Server
+  hosts: FileServers
+
+  vars_files:
+    - ../../groups_vars/all.yaml
+    - vars/all.yaml
+    
+#  roles:
+#    - role: file-server
+
+  tasks:
+    - include_tasks: tasks/configure_samba.yaml
+      tags: ['samba']
+    - include_tasks: tasks/configure_cronjob.yaml
+      tags: ['cron']
+
+  handlers:
+    - import_tasks: handlers/main.yaml

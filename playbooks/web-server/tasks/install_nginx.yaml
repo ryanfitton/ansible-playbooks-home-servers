@@ -1,0 +1,42 @@
+---
+# This will install Nginx
+
+- name: Ensure dirmngr is installed (gnupg dependency)
+  become: true
+  apt:
+    name: dirmngr
+    state: present
+
+- name: Add PPA for Nginx
+  become: true
+  ignore_errors: true
+  apt_repository:
+    repo: 'ppa:nginx/stable'
+    state: present
+    update_cache: true
+  register: nginx_ppa_added
+
+- name: Ensure nginx will reinstall if the PPA was just added.
+  become: true
+  apt:
+    name: "nginx"
+    state: absent
+  when: nginx_ppa_added is changed
+
+- name: Install Nginx packages
+  become: true
+  apt:
+    name:
+      - nginx
+    state: present
+    update_cache: yes
+
+- name: Restarting Nginx and PHP
+  become: true
+  changed_when: true
+  ansible.builtin.debug:
+    msg: "{{ ansible_host }}: Restarting Nginx and PHP"
+  notify:
+    - restart php
+    - reload nginx
+    - restart nginx

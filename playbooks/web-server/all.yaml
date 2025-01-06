@@ -1,0 +1,7 @@
+---
+# Include all playbooks
+
+
+- import_playbook: commissioning.yaml
+- import_playbook: configuration.yaml
+- import_playbook: update_default_vhost_web_root_files.yaml

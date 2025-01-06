@@ -1,0 +1,16 @@
+---
+# This will setup Cronjobs on the server
+
+- name: Copy the service check file for the Cronjob
+  become: true
+  ansible.builtin.template:
+    src: service_check.sh
+    dest: "/service_check.sh"
+    mode: a+x
+
+- name: Setup service check Cronjob
+  become: true
+  ansible.builtin.cron:
+    name: "Cups service check Cronjob"
+    minute: "0"
+    job: "/service_check.sh"

@@ -1,0 +1,35 @@
+---
+# This will install PHP
+- name: Install software-properties-common
+  become: true
+  apt:
+    name: software-properties-common
+    state: present
+  
+- name: Add PHP repository
+  become: true
+  ignore_errors: true
+  apt_repository:
+    repo: ppa:ondrej/php
+    state: present
+    update_cache: true
+  
+- name: Install PHP 8.3 packages
+  become: true
+  apt:
+    name:
+      - php8.3-cli
+      - php8.3-fpm
+      - php8.3-common
+      - php8.3-mbstring
+      - php8.3-xmlrpc
+      - php8.3-soap
+      - php8.3-gd
+      - php8.3-xml
+      - php8.3-intl
+      - php8.3-mysql
+      - php8.3-cli
+      - php8.3-zip
+      - php8.3-curl
+    state: present
+    update_cache: yes

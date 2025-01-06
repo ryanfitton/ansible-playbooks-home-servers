@@ -1,0 +1,12 @@
+---
+# Find the Frigate logins from the logs
+- name: Find the Frigate logins from the logs
+  become: true
+  shell:
+    cmd: docker logs frigate 2>&1 | grep "Password:"
+  register: grep_output
+  ignore_errors: true
+  changed_when: true
+
+- name: Result from the Frigate logs
+  debug: msg="{{ grep_output.stdout }}"

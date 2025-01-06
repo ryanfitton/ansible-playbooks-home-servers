@@ -1,0 +1,10 @@
+---
+# This will reload Nginx
+
+- name: Reload Nginx
+  become: true
+  changed_when: true
+  ansible.builtin.debug:
+    msg: "{{ ansible_host }}: Reloading Nginx"
+  notify:
+    - reload nginx

@@ -1,0 +1,10 @@
+---
+# This will stop PHP
+
+- name: Stop PHP
+  become: true
+  changed_when: true
+  ansible.builtin.debug:
+    msg: "{{ ansible_host }}: Stopping PHP"
+  notify:
+    - stop php

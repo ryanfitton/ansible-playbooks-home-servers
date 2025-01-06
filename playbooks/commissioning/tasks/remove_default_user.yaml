@@ -1,0 +1,39 @@
+---
+# This will remove the default user from what is defined in `group_var/all.yaml`
+
+
+# ----------------------------------------------------------------------------------
+# Remove the default user `{{ default_user }}`
+# ----------------------------------------------------------------------------------
+- name: Remove the default user "{{ default_user }}"
+  become: true
+  ansible.builtin.user:
+    name: "{{ default_user }}"
+    state: absent
+    remove: yes
+    force: yes
+  ignore_errors: true
+
+- name: Remove the default user home directory
+  become: true
+  ansible.builtin.file:
+    state: absent
+    path: "/home/{{ default_user }}/"
+  ignore_errors: true
+
+
+# ----------------------------------------------------------------------------------
+# Update SSHD settings
+# ----------------------------------------------------------------------------------
+- name: Disable SSH Root Login
+  become: true
+  lineinfile:
+    dest: /etc/ssh/sshd_config
+    regexp: '^PermitRootLogin'
+    line: "PermitRootLogin no"
+    state: present
+    backup: yes
+  notify: restart ssh  # Perform a final restart of ssh
+
+- name: "Force all notified handlers to run at this point, not waiting for normal sync points"
+  ansible.builtin.meta: flush_handlers

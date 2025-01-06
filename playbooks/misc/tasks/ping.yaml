@@ -1,0 +1,20 @@
+---
+# This will ping the host
+
+- name: ICMP all Ansible hosts
+  ansible.builtin.command: 'ping -c 2 {{ hostvars[item]["ansible_host"] }}'
+  ignore_errors: true
+  delegate_to: localhost
+  register: result
+  loop: "{{ groups['all'] }}"
+
+- name: ICMP Results
+  debug:
+    msg: "{{ result }}"
+
+- name: Ping hosts via Ansible Ping built-in module
+  ansible.builtin.ping:
+
+- name: Ansible Ping built-in module results
+  ansible.builtin.debug:
+    msg: Host returning IP Address {{ ansible_ssh_host }} from Ping

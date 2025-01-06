@@ -1,0 +1,10 @@
+---
+# This will stop Cups
+
+- name: Stop Cups
+  become: true
+  changed_when: true
+  ansible.builtin.debug:
+    msg: "{{ ansible_host }}: Stopping Cups"
+  notify:
+    - stop cups

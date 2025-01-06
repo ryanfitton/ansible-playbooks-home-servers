@@ -1,0 +1,69 @@
+---
+# Specify the default login details for a freshly installed node - No need to use an encrypted password as this user account will be removed from the system
+# and all future management commands will be run under the `management_user` account login.
+default_user: "user"
+default_user_password: "user"
+
+
+
+# Management user, this will be used by the ansible CLI to login and manage the nodes
+management_user: "ansible"
+management_user_password: !vault |
+  $ANSIBLE_VAULT;1.1;AES256
+  35313166306562303339343432323466623437636537643838343238356230343831366230373165
+  6236373635393033313235663133326261326539383331310a353562663666363938626339396439
+  65326536633866306333336136653266393465666366613363353665383136363930653765656161
+  3165623931623935640a616432383235356635326261393533343866306439383839636635636266
+  3335
+management_user_ssh_public_key: "../../ssh_keys/ansible/id_rsa.pub" # Location to the public key in this repo
+management_user_groups: 
+  - "admins"
+  - "ansible"
+
+
+
+# Create a list of standard user accounts
+user_groups: 
+  - "users"
+
+users:
+  - username: ryan
+    password: !vault |
+      $ANSIBLE_VAULT;1.1;AES256
+      30633836316662646264356338653932336364626137386532366337313738643333616563393061
+      3164323735616666663033316137646333353031653964370a613062343436353538313136383566
+      65623366363161383839376539643137306663373566626565383334326436666431376435393333
+      3632353337326130360a313439333439343861363061303961353335366132663534616134306639
+      6265
+    group: "users"
+    ssh_public_key: "../../ssh_keys/ryan/id_rsa.pub" # Location to the public key in this repo
+  - username: bethany
+    password: !vault |
+      $ANSIBLE_VAULT;1.1;AES256
+      35646331363264633238303235303230303137343033383537663064666664383964636437306331
+      3334663665363262393139303161316239343237363938660a393239316631363764356437343535
+      61373861613536613561343337303133303266626264636334316132333230396138653737346339
+      3237303834316330610a376336386339636138393231663235306565333132336139363739316265
+      6465
+    group: "users"
+    ssh_public_key: "../../ssh_keys/bethany/id_rsa.pub" # Location to the public key in this repo
+
+
+
+# Hostname Details
+hostname_prefix: ''
+hostname_suffix: '.local'
+
+
+
+# Specify SSH Details
+# The custom SSH port is defined in `ansible.cfg`
+# The SSH Private key is defined in `ansible.cfg`
+# You should add your public key pair into `/roles/commissioning/templates/authorized_keys``
+default_ssh_port: 22 
+custom_ssh_port: 1993 
+
+
+
+# NTP Server
+timezone: 'Europe/London'

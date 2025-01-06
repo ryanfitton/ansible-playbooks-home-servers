@@ -1,0 +1,32 @@
+---
+
+- name: Set upload_max_filesize in `{{ php_ini }}`
+  become: true
+  lineinfile:
+    path: "{{ php_ini }}"
+    regexp: '^upload_max_filesize ='
+    line: 'upload_max_filesize = 200M'
+
+- name: Set post_max_size in `{{ php_ini }}`
+  become: true
+  lineinfile:
+    path: "{{ php_ini }}"
+    regexp: '^post_max_size ='
+    line: '  = 200M'
+
+- name: Set memory_limit in `{{ php_ini }}`
+  become: true
+  lineinfile:
+    path: "{{ php_ini }}"
+    regexp: '^memory_limit ='
+    line: 'memory_limit = 200M'
+
+- name: Restarting Nginx and PHP
+  become: true
+  changed_when: true
+  ansible.builtin.debug:
+    msg: "{{ ansible_host }}: Restarting Nginx and PHP"
+  notify:
+    - restart php
+    - reload nginx
+    - restart nginx

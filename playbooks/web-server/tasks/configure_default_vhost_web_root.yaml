@@ -1,0 +1,28 @@
+---
+# This configure the default vhost www files
+
+- name: Ensure default vhost www path exists
+  become: true
+  file:
+    path: "{{ nginx_web_root_default }}"
+    state: directory
+    mode: 0755
+  notify: reload nginx
+
+- name: Copy the default vhost www files
+  become: true
+  ansible.builtin.template:
+    src: vhost.default.index.html
+    dest: "{{ nginx_web_root_default }}/index.html"
+    mode: "0644"
+  notify: reload nginx
+
+- name: Restarting Nginx and PHP
+  become: true
+  changed_when: true
+  ansible.builtin.debug:
+    msg: "{{ ansible_host }}: Restarting Nginx and PHP"
+  notify:
+    - restart php
+    - reload nginx
+    - restart nginx

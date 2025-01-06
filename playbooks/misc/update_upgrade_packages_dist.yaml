@@ -1,0 +1,18 @@
+---
+# This playbook deploys the whole application stack in this site.
+# https://docs.ansible.com/ansible/latest/inventory_guide/intro_patterns.html
+
+
+- name: Update and Upgrade host packages
+  hosts: all
+  gather_facts: false
+
+  vars_files:
+    - ../../groups_vars/all.yaml
+
+#  roles:
+#    - role: common
+
+  tasks:
+    - include_tasks: tasks/update_upgrade_packages_dist.yaml
+      tags: ['update_upgrade']

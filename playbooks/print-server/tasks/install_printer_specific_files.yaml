@@ -1,0 +1,36 @@
+---
+# This will install and configure printer specific files with Cups
+
+- name: Install HP Cups packages
+  become: true
+  apt:
+    name:
+      - hpijs-ppds
+      - hp-ppd
+      - hplip
+    state: present
+    update_cache: yes
+  notify:
+    - restart cups
+
+- name: Check if specific driver patches have alredy been created
+  stat:
+    path: "/splix-patches/splix"
+  register: splix_exists
+
+- name: Download and install driver patches for printers like the Samsung M2020 when the `Splix` packages path does not exist in the root directory
+  become: true
+  ansible.builtin.shell: |
+    cd / \
+      && wget https://gitlab.com/ScumCoder/splix/-/archive/patches/splix-patches.zip \
+      && unzip splix-patches.zip \
+      && rm -v splix-patches.zip \
+      && cd splix-patches/splix \
+      && make DISABLE_JBIG=1 \
+      && make install
+  when: not splix_exists.stat.exists
+  notify:
+    - restart cups
+
+- name: "Force all notified handlers to run at this point, not waiting for normal sync points"
+  ansible.builtin.meta: flush_handlers

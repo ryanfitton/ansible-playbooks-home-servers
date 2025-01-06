@@ -1,0 +1,10 @@
+---
+# This will start PHP
+
+- name: Start PHP
+  become: true
+  changed_when: true
+  ansible.builtin.debug:
+    msg: "{{ ansible_host }}: Starting PHP"
+  notify:
+    - start php
