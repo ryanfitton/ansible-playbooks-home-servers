@@ -8,7 +8,7 @@ Unattended-Upgrade::Origins-Pattern {
     "{{ origin }}";
   {% endfor %}
 {% else %}
-  {% for origin in __unattended_origins_patterns %}
+  {% for origin in 'origin=Ubuntu,archive=${distro_codename}-security,label=Ubuntu' %}
    "{{ origin }}";
   {% endfor %}
 {% endif %}
