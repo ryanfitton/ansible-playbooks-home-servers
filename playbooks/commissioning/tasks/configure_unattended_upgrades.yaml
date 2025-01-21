@@ -1,0 +1,46 @@
+---
+# This will configure unattended upgrades for this node
+
+# Ignored, since newer distros don't need this package
+# https://github.com/jnv/ansible-role-unattended-upgrades/issues/6
+- name: Install update-notifier-common
+  apt:
+    pkg: update-notifier-common
+    state: present
+  failed_when: false
+
+
+- name: Install powermgmt-base
+  apt:
+    pkg:
+    state: present
+    cache_valid_time: "{{ unattended_cache_valid_time }}"
+    update_cache: yes
+  when: unattended_only_on_ac_power
+
+- name: Install unattended-upgrades
+  apt:
+    pkg: unattended-upgrades
+    state: present
+    cache_valid_time: "{{ unattended_cache_valid_time }}"
+    update_cache: yes
+
+- name: Install reboot dependencies
+  include: reboot.yml
+  when: unattended_automatic_reboot|bool
+
+- name: Create APT auto-upgrades configuration
+  template:
+    src: auto-upgrades.j2
+    dest: /etc/apt/apt.conf.d/20auto-upgrades
+    owner: root
+    group: root
+    mode: 0644
+
+- name: Create unattended-upgrades configuration
+  template:
+    src: unattended-upgrades.j2
+    dest: /etc/apt/apt.conf.d/50unattended-upgrades
+    owner: root
+    group: root
+    mode: 0644
