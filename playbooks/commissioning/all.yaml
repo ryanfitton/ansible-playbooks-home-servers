@@ -26,6 +26,8 @@
       tags: ['hostname']
     - include_tasks: tasks/configure_timezone.yaml
       tags: ['timezone']
+    - include_tasks: tasks/configure_unattended_upgrades.yaml
+      tags: ['security']
 
   handlers:
     - import_tasks: handlers/main.yaml
