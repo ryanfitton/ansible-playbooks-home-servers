@@ -46,7 +46,6 @@ virtualmachines:
     MediaServers:
     FileServers:
     NvrServers:
-    PrintServers:
     WebServers:
     NetworkControllerServers:
 
