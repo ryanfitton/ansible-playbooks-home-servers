@@ -9,6 +9,7 @@
 
   vars_files:
     - ../../groups_vars/all.yaml
+    - vars/unattended_upgrades.yaml
 
 #   roles:
 #     - role: commissioning
