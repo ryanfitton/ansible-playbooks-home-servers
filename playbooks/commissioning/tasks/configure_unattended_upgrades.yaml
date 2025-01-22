@@ -119,3 +119,15 @@
         state: 'absent'
       notify:
         - 'Restart apt-daily-upgrade timer'
+
+# List status of 'unattended-upgrades' service
+- name: Finding status of `unattended-upgrades` service
+  become: true
+  shell:
+    cmd: systemctl status unattended-upgrades
+  register: grep_output
+  ignore_errors: true
+  changed_when: true
+
+- name: Result from `unattended-upgrades` service status
+  debug: msg="{{ grep_output.stdout }}"

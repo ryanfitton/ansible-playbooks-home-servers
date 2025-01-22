@@ -1,5 +1,8 @@
 # Ansible Playbooks for Home Servers
 
+Designed for systems running `Ubuntu 22.04` and later.
+
+
 ## Setup
 
 * Ensure Ansible is installed, follow: https://docs.ansible.com/ansible/latest/installation_guide/intro_installation.html

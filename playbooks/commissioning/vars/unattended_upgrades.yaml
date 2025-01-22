@@ -198,3 +198,12 @@ __clear_options:
 
 __unattended_origins_patterns:
   - 'origin=Ubuntu,archive=${distro_codename}-security,label=Ubuntu'
+
+# If `Debian`
+# __unattended_origins_patterns:
+#   - 'origin=Debian,codename=${distro_codename},label=Debian-Security'
+#   - 'origin=Debian,codename=${distro_codename}-security,label=Debian-Security'
+
+# If `Debian-Buster`
+# __unattended_origins_patterns:
+#   - 'origin=Debian,codename=${distro_codename},label=Debian-Security'
