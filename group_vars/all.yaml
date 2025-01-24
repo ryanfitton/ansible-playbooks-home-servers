@@ -52,7 +52,7 @@ users:
 
 # Hostname Details
 hostname_prefix: ''
-hostname_suffix: '.local'
+hostname_suffix: '.home.lan'
 
 
 
