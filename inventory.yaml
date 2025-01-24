@@ -1,5 +1,9 @@
 
 # Groups
+PrintServers:
+  hosts:
+    print-server-host01:
+      ansible_host: 10.0.10.101
 MediaServers:
   hosts:
     media-server-host01:
@@ -12,10 +16,6 @@ NvrServers:
   hosts:
     nvr-server-host01:
       ansible_host: 10.0.10.107
-PrintServers:
-  hosts:
-    print-server-host01:
-      ansible_host: 10.0.10.108
 WebServers:
   hosts:
     web-server-host01:
@@ -32,7 +32,7 @@ baremetal:
     PrintServers:
 #  hosts:
 #    print-server-host01:
-#      ansible_host: 10.0.10.108
+#      ansible_host: 10.0.10.101
 
 # Hypervisors which will run Virtual Machines
 hypervisors:

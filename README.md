@@ -253,7 +253,7 @@ docker logs frigate
 
 
 ## Print-Server Notes
-Setup URL: https://10.0.10.108:631
+Setup URL: https://10.0.10.101:631
 Cups Management user logins:
 print
 print
