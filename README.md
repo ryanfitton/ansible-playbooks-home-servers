@@ -296,3 +296,4 @@ Unifi - Using Docker
 
 
 
+Can I include a task within a task e.g. Gather Facts and Setting custom method, so it only has to be edited in one place

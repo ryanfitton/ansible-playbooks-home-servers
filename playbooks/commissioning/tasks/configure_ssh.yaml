@@ -36,6 +36,20 @@
 
 
 # ----------------------------------------------------------------------------------
+# Set custom become method
+# ----------------------------------------------------------------------------------
+- name: "Set 'become_method' if Ubuntu distribution"
+  set_fact:
+    custom_become_method: sudo
+  when: ansible_distribution == 'Ubuntu'  # Only for Ubuntu systems
+
+- name: "Set 'become_method' if Debian distribution"
+  set_fact:
+    custom_become_method: su
+  when: ansible_distribution == 'Debian' or ansible_distribution == 'Debian-Buster'   # Only for Debian systems
+  
+
+# ----------------------------------------------------------------------------------
 # Patch for Ubuntu to ensure the Socket-based Sshd service is disabled, and to revert back to the old service
 # ----------------------------------------------------------------------------------
 # Switch to using sshd configs as SSHd now uses socket-based activation in Ubuntu 22.10 or later, we want to revert back to the old method
@@ -76,7 +90,7 @@
 
 - name: Enable ssh service
   become: true
-  become_method: su
+  become_method: "{{ custom_become_method }}"
   ansible.builtin.service:
     name: ssh
     state: started
@@ -87,7 +101,7 @@
 
 - name: Rebooting machine
   become: true
-  become_method: su
+  become_method: "{{ custom_become_method }}"
   changed_when: true
   ansible.builtin.reboot:
     reboot_timeout: 300
@@ -100,7 +114,7 @@
 # ----------------------------------------------------------------------------------
 - name: Setup custom SSH port {{ custom_ssh_port }}
   become: true
-  become_method: su
+  become_method: "{{ custom_become_method }}"
   changed_when: true
   lineinfile:
     dest: "/etc/ssh/sshd_config"
@@ -108,7 +122,9 @@
     line: "Port {{ custom_ssh_port }}"
     state: present
     backup: yes
-  notify: restart ssh su
+  notify: 
+    - restart ssh
+    - restart ssh su
 
 - name: "Force all notified handlers to run at this point, not waiting for normal sync points"
   ansible.builtin.meta: flush_handlers
@@ -123,7 +139,7 @@
 # ----------------------------------------------------------------------------------
 - name: Disable DNS use for SSH
   become: true
-  become_method: su
+  become_method: "{{ custom_become_method }}"
   lineinfile:
     dest: /etc/ssh/sshd_config
     regexp: '^UseDNS'
@@ -133,7 +149,7 @@
 
 - name: Disable empty passwords for SSH
   become: true
-  become_method: su
+  become_method: "{{ custom_become_method }}"
   lineinfile:
     dest: /etc/ssh/sshd_config
     regexp: '^PermitEmptyPasswords'
@@ -143,7 +159,7 @@
 
 - name: Disable ChallengeResponseAuthentication for SSH
   become: true
-  become_method: su
+  become_method: "{{ custom_become_method }}"
   lineinfile:
     dest: /etc/ssh/sshd_config
     regexp: '^ChallengeResponseAuthentication'
@@ -153,7 +169,7 @@
 
 - name: Disable GSSAPIAuthentication for SSH
   become: true
-  become_method: su
+  become_method: "{{ custom_become_method }}"
   lineinfile:
     dest: /etc/ssh/sshd_config
     regexp: '^GSSAPIAuthentication'
@@ -163,7 +179,7 @@
 
 - name: Disable X11Forwarding for SSH
   become: true
-  become_method: su
+  become_method: "{{ custom_become_method }}"
   lineinfile:
     dest: /etc/ssh/sshd_config
     regexp: '^X11Forwarding'

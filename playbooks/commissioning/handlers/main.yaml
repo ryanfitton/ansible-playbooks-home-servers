@@ -8,6 +8,7 @@
     name: sshd
     state: restarted
   listen: restart ssh
+  when: ansible_distribution == 'Ubuntu'  # Only for Ubuntu systems
 
 # Restart SSH with 'su' command, only for when users is not a 'root' user
 - name: restart ssh su
@@ -17,7 +18,7 @@
     name: sshd
     state: restarted
   listen: restart ssh
-  when: ansible_user != '{{ management_user }}'
+  when: ansible_user != '{{ management_user }}' and ansible_distribution == 'Debian' or ansible_distribution == 'Debian-Buster'   # Only for Debian systems
 
 - name: reload ssh
   become: true

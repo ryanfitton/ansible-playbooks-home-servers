@@ -25,6 +25,17 @@
 
 
 # ----------------------------------------------------------------------------------
+# Get distribition facts
+# ----------------------------------------------------------------------------------
+- name: Gather the distribution fact
+  setup:
+
+#- name: Showgathered distribution
+#  debug:
+#    msg: "{{ ansible_facts }}"
+
+
+# ----------------------------------------------------------------------------------
 # This will install the sudo package
 # ----------------------------------------------------------------------------------
 - name: "Install sudo"
@@ -34,6 +45,7 @@
     name: "sudo"
     state: "present"
     force_apt_get: "yes"
+  when: ansible_distribution == 'Debian' or ansible_distribution == 'Debian-Buster'   # Only for Debian systems - Not installed by default
 
 # Create /etc/sudoers file 
 - name: "Create '/etc/sudoers' file"
@@ -45,3 +57,4 @@
     owner: root
     group: root
     mode: 0440
+  when: ansible_distribution == 'Debian' or ansible_distribution == 'Debian-Buster'   # Only for Debian systems - Not installed by default
