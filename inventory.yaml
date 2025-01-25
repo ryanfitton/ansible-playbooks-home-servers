@@ -7,23 +7,23 @@ PrintServers:
 MediaServers:
   hosts:
     media-server-host01:
-      ansible_host: 10.0.10.105
+      ansible_host: 10.0.10.102
 FileServers:
   hosts:
     file-server-host01:
-      ansible_host: 10.0.10.106
+      ansible_host: 10.0.10.103
 NvrServers:
   hosts:
     nvr-server-host01:
-      ansible_host: 10.0.10.107
+      ansible_host: 10.0.10.104
 WebServers:
   hosts:
     web-server-host01:
-      ansible_host: 10.0.10.109
+      ansible_host: 10.0.10.105
 NetworkControllerServers:
   hosts:
     network-controller-server-host01:
-      ansible_host: 10.0.10.110
+      ansible_host: 10.0.10.106
 
 
 # Any bare metal devices E.g Standalone, not managed by a Hypervisor

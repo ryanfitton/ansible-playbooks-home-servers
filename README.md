@@ -197,30 +197,30 @@ You can these login with these keys, you will need to decrypt the SSH key first:
 
 ```
 ansible-vault decrypt --vault-password-file "vault/vault.pass" "ssh_keys/ansible/id_rsa"
-ssh -i ssh_keys/ansible/id_rsa ansible@10.0.10.106 -p1993
+ssh -i ssh_keys/ansible/id_rsa ansible@10.0.10.103 -p1993
 ```
 
 ```
 ansible-vault decrypt --vault-password-file "vault/vault.pass" "ssh_keys/bethany/id_rsa"
-ssh -i ssh_keys/bethany/id_rsa bethany@10.0.10.106 -p1993
+ssh -i ssh_keys/bethany/id_rsa bethany@10.0.10.103 -p1993
 ```
 
 ```
 ansible-vault decrypt --vault-password-file "vault/vault.pass" "ssh_keys/ryan/id_rsa"
-ssh -i ssh_keys/ryan/id_rsa ryan@10.0.10.106 -p1993
+ssh -i ssh_keys/ryan/id_rsa ryan@10.0.10.103 -p1993
 ```
 
 
 
 ## File-Server Notes
 
-smb://10.0.10.106/nasdata/
+smb://10.0.10.103/nasdata/
 
 Use same login accounts as system users
 
 Setup configuration for shares in `playbooks/file-server/vars/all.yaml`
 By default, this share will be created: `nasdata`
-smb://10.0.10.106/nasdata/
+smb://10.0.10.103/nasdata/
 You will need to attach the storage disk to this folder: `/datastore/nasdata/`
 
 
@@ -228,7 +228,7 @@ You will need to attach the storage disk to this folder: `/datastore/nasdata/`
 
 ## Media-Server Notes
 Setup URL:
-http://10.0.10.105:8096/
+http://10.0.10.102:8096/
 
 Setup configuration for shares in `playbooks/media-server/vars/all.yaml`
 
@@ -237,7 +237,7 @@ You will need to attach the storage disk to this folder: `/datastore/mediadata/`
 
 
 ## NVR-Server Notes
-Setup URL: https://10.0.10.107:8971
+Setup URL: https://10.0.10.104:8971
 
 Setup configuration for shares in `playbooks/media-server/vars/all.yaml`
 
@@ -264,7 +264,7 @@ Setup configuration for shares in `playbooks/print-server/vars/all.yaml`
 
 
 ## Web-Server Notes
-URL: http://10.0.10.109
+URL: http://10.0.10.105
 Only oe vhost setup, default files stored: `/var/www/default`
 
 Setup configuration for shares in `playbooks/web-server/vars/all.yaml`
@@ -273,7 +273,7 @@ Setup configuration for shares in `playbooks/web-server/vars/all.yaml`
 
 ## Network-Controller-Server Notes
 Setup URL:
-https://10.0.10.110:8443/
+https://10.0.10.106:8443/
 
 Default username and password:
 ubnt
