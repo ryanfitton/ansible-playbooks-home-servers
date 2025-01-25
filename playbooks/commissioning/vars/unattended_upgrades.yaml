@@ -197,13 +197,7 @@ __clear_options:
   - "Unattended-Upgrade::Verbose"
 
 __unattended_origins_patterns:
-  - 'origin=Ubuntu,archive=${distro_codename}-security,label=Ubuntu'
-
-# If `Debian`
-# __unattended_origins_patterns:
-#   - 'origin=Debian,codename=${distro_codename},label=Debian-Security'
-#   - 'origin=Debian,codename=${distro_codename}-security,label=Debian-Security'
-
-# If `Debian-Buster`
-# __unattended_origins_patterns:
-#   - 'origin=Debian,codename=${distro_codename},label=Debian-Security'
+  - "{{ 'origin=Ubuntu,archive=${distro_codename}-security,label=Ubuntu' if ansible_distribution == 'Ubuntu' }}"
+  - "{{ 'origin=Debian,codename=${distro_codename},label=Debian-Security' if ansible_distribution == 'Debian' }}"
+  - "{{ 'origin=origin=Debian,codename=${distro_codename}-security,label=Debian-Security' if ansible_distribution == 'Debian' }}"
+  - "{{ 'origin=Debian,codename=${distro_codename},label=Debian-Security' if ansible_distribution == 'Debian-Buster' }}"

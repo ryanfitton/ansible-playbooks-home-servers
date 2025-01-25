@@ -1,7 +1,7 @@
 ---
 # This will install Emby
 
-# This will setup the required packages for Ubuntu
+# This will setup the required packages for Emby
 
 # Add the user with a primary group
 - name: Create group for Emby

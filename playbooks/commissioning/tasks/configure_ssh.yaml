@@ -35,10 +35,12 @@
   become: true
   ignore_errors: true
   shell: mkdir -p /etc/systemd/system-generators
+  when: ansible_distribution == 'Ubuntu'    # Only for Ubuntu systems
 - name: Symbolic link to dev null for systemd generators
   become: true
   ignore_errors: true
   shell: ln -s /dev/null /etc/systemd/system-generators/sshd-socket-generator
+  when: ansible_distribution == 'Ubuntu'    # Only for Ubuntu systems
 # Switch to using sshd configs as SSHd now uses socket-based activation in Ubuntu 22.10 or later, we want to revert back to the old method
 # https://askubuntu.com/questions/1439461/ssh-default-port-not-changing-ubuntu-22-10-and-later
 # https://github.com/dev-sec/ansible-collection-hardening/pull/784
@@ -51,6 +53,7 @@
     - /etc/systemd/system/ssh.service.d/00-socket.conf
     - /etc/systemd/system/ssh.service.requires/ssh.socket
     - /etc/systemd/system/sockets.target.wants/ssh.socket
+  when: ansible_distribution == 'Ubuntu'    # Only for Ubuntu systems
 
 - name: Disable systemd-socket activation
   become: true

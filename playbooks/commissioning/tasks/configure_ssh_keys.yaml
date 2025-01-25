@@ -103,7 +103,8 @@
     dest: "/etc/ssh/sshd_config.d/50-cloud-init.conf"
     regexp: "^PasswordAuthentication"
     state: absent
-  notify: restart ssh  # Perform a final restart of ssh
+  notify: restart ssh                       # Perform a final restart of ssh
+  when: ansible_distribution == 'Ubuntu'    # Only for Ubuntu systems
 
 - name: "Force all notified handlers to run at this point, not waiting for normal sync points"
   ansible.builtin.meta: flush_handlers

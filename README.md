@@ -1,6 +1,6 @@
 # Ansible Playbooks for Home Servers
 
-Designed for systems running `Ubuntu 22.04` and later.
+Designed for systems running `Ubuntu 22.04` or `Debian 12.9.0` and later.
 
 
 ## Setup
