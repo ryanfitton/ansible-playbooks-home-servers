@@ -14,7 +14,7 @@
 #    - role: network-controller-server
 
   tasks:
-    - include_tasks: tasks/unifi_network_server.yaml
+    - include_tasks: tasks/install_unifi_network_server.yaml
       tags: ['unifi']
     
   handlers:

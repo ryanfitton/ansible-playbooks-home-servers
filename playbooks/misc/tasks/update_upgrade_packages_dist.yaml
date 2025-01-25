@@ -12,7 +12,7 @@
 
 - name: Rebooting machine
   become: true
-  changed_when: true
+  become_method: su
   ansible.builtin.reboot:
     reboot_timeout: 300
     msg: "Rebooting machine in 5 seconds"

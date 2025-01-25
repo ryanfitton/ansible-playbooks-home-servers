@@ -40,6 +40,13 @@
     group: "root"
     mode: "0644"
 
+- name: Remove any empty quote lines from unattended-upgrades configuration
+  become: true
+  lineinfile:
+    dest: "/etc/apt/apt.conf.d/90-ansible-unattended-upgrades"
+    regexp: '"";' # Line: `"";`
+    state: absent
+
 # From `systemd_timers.yml`
 - name: Install systemd timer schedule overrides
   when: 'unattended_systemd_timer_override'

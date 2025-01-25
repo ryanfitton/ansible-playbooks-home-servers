@@ -9,6 +9,16 @@
     state: restarted
   listen: restart ssh
 
+# Restart SSH with 'su' command, only for when users is not a 'root' user
+- name: restart ssh su
+  become: true
+  become_method: su
+  ansible.builtin.systemd:
+    name: sshd
+    state: restarted
+  listen: restart ssh
+  when: ansible_user != '{{ management_user }}'
+
 - name: reload ssh
   become: true
   ansible.builtin.systemd:

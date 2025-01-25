@@ -3,6 +3,17 @@
 
 
 # ----------------------------------------------------------------------------------
+# Get distribition facts
+# ----------------------------------------------------------------------------------
+- name: Gather the distribution fact
+  setup:
+
+#- name: Showgathered distribution
+#  debug:
+#    msg: "{{ ansible_facts }}"
+
+
+# ----------------------------------------------------------------------------------
 # Changing login details - Configure Ansible to not use a Private SSH Key file for the `{{ management_user }}` as they're not installed just yet
 # ----------------------------------------------------------------------------------
 - name: Changing login details - Configure Ansible to not use a Private SSK Key file for the `{{ management_user }}` as they're not installed just yet

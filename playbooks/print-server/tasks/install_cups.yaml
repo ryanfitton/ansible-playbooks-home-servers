@@ -23,10 +23,11 @@
       - cups-bsd
       - cups-filters
       - foomatic-db-compressed-ppds
-      - printer-driver-all
+      #- printer-driver-all
       - openprinting-ppds
       - smbclient
       - printer-driver-cups-pdf
+      - unzip
     state: present
     update_cache: yes
   notify: restart cups

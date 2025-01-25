@@ -24,6 +24,7 @@
 # Create a Management user which will be used by the Ansible CLI going-forwards specified in `ansible.cfg` as `remote_user`.
 - name: Create Management user groups '{{ management_user_groups }}'
   become: true
+  become_method: su
   ansible.builtin.group:
     name: "{{ item }}"
     state: present
@@ -31,6 +32,7 @@
 
 - name: Create Management user
   become: true
+  become_method: su
   ansible.builtin.user:
     name: "{{ management_user }}"
     state: present
@@ -41,6 +43,7 @@
 
 - name: Add Management user to groups
   become: true
+  become_method: su
   user:
     name: '{{ management_user }}'
     groups: "{{ item }}"
@@ -49,12 +52,13 @@
 
 - name: Allow management groups to have passwordless sudo
   become: true
+  become_method: su
   lineinfile:
     dest: /etc/sudoers
     state: present
     regexp: "^%{{ item }}"
     line: "%{{ item }} ALL=(ALL) NOPASSWD: ALL"
-    validate: visudo -cf %s
+    validate: /usr/sbin/visudo -cf %s
   loop: "{{ management_user_groups }}"
 
 - name: Set Ansible CLI to use the Management user

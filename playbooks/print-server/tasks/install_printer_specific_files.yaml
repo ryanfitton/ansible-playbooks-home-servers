@@ -1,18 +1,25 @@
 ---
 # This will install and configure printer specific files with Cups
 
-- name: Install HP Cups packages
-  become: true
-  apt:
-    name:
-      - hpijs-ppds
-      - hp-ppd
-      - hplip
-    state: present
-    update_cache: yes
-  notify:
-    - restart cups
+# ----------------------------------------------------------------------------------
+# HP Printers
+# ----------------------------------------------------------------------------------
+# - name: Install HP Cups packages if you have a HP Printer
+#   become: true
+#   apt:
+#     name:
+#       - hpijs-ppds
+#       - hp-ppd
+#       - hplip
+#     state: present
+#     update_cache: yes
+#   notify:
+#     - restart cups
 
+
+# ----------------------------------------------------------------------------------
+# Splix package for Samsung printers
+# ----------------------------------------------------------------------------------
 - name: Check if specific driver patches have alredy been created
   stat:
     path: "/splix-patches/splix"
@@ -31,6 +38,7 @@
   when: not splix_exists.stat.exists
   notify:
     - restart cups
+
 
 - name: "Force all notified handlers to run at this point, not waiting for normal sync points"
   ansible.builtin.meta: flush_handlers
