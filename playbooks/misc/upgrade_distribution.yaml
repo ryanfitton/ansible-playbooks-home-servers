@@ -5,6 +5,7 @@
 
 - name: Update distribution on the host
   gather_facts: true
+  hosts: "{{ target}}"
 
   vars_files:
     - ../../groups_vars/all.yaml

@@ -72,13 +72,13 @@ If you wanted to commision a specific group or node listed in `inventory.yaml` u
 ## Misc
 These are intended to be run as seperate Playbooks on manually specified hosts, so there is no option to run as 'all':
 
-For exaple, run on the 'WebServers' group:
-* Ping hosts: `ansible-playbook playbooks/misc/ping.yaml -i inventory.yaml --limit 'WebServers'`
-* List the inventory: `ansible-playbook playbooks/misc/inventory_info.yaml -i inventory.yaml --limit 'WebServers'`
-* Update hosts packages: `ansible-playbook playbooks/misc/update_packages.yaml -i inventory.yaml --limit 'WebServers'`
-* Distribution upgrade on hosts packages: `ansible-playbook playbooks/misc/upgrade_distribution.yaml -i inventory.yaml --limit 'WebServers'`
-* Get disk usage: `ansible-playbook playbooks/misc/get_disk_usage.yaml -i inventory.yaml --limit 'WebServers'`
-* Get uptime: `ansible-playbook playbooks/misc/get_uptime.yaml -i inventory.yaml --limit 'WebServers'`
+For exaple, run on the 'WebServers' group by speciying a value for `target`:
+* Ping hosts: `ansible-playbook playbooks/misc/ping.yaml -i inventory.yaml --extra-vars "target=WebServers"`
+* List the inventory: `ansible-playbook playbooks/misc/inventory_info.yaml -i inventory.yaml --extra-vars "target=WebServers"`
+* Update hosts packages: `ansible-playbook playbooks/misc/update_packages.yaml -i inventory.yaml --extra-vars "target=WebServers"`
+* Distribution upgrade on hosts packages: `ansible-playbook playbooks/misc/upgrade_distribution.yaml -i inventory.yaml --extra-vars "target=WebServers"`
+* Get disk usage: `ansible-playbook playbooks/misc/get_disk_usage.yaml -i inventory.yaml --extra-vars "target=WebServers"`
+* Get uptime: `ansible-playbook playbooks/misc/get_uptime.yaml -i inventory.yaml --extra-vars "target=WebServers"`
 
 
 ## File-Server

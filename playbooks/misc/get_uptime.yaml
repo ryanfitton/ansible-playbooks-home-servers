@@ -5,7 +5,8 @@
 
 - name: Get uptime
   gather_facts: true
-
+  hosts: "{{ target}}"
+  
   vars_files:
     - ../../groups_vars/all.yaml
 

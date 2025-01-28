@@ -5,6 +5,7 @@
 
 - name: Get disk usage
   gather_facts: true
+  hosts: "{{ target}}"
 
   vars_files:
     - ../../groups_vars/all.yaml
