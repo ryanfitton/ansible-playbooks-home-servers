@@ -2,14 +2,14 @@
   ansible.builtin.apt:
     update_cache: yes
     cache_valid_time: 3600
-    
-- name: Update all packages to their latest version
-  ansible.builtin.apt:
-    name: "*"
-    state: latest
+
+- name: Upgrade the OS (apt-get dist-upgrade)
+  become: true
+  apt: 
+    upgrade: dist
 
 - debug:
-    msg: "NOTE: Now rebooting the machine as packages have been updated"
+    msg: "NOTE: Now rebooting the machine as distribution has been updated"
 
 - name: Rebooting machine
   become: true

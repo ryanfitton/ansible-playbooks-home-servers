@@ -1,46 +1,19 @@
 ---
 # This will configure the default users and user groups for the node
 
-# ----------------------------------------------------------------------------------
-# Testing connection to determine correct login details
-# ----------------------------------------------------------------------------------
-- name: "Test initial connection using logins stored in `ansible.cfg`."
-  ping:
-  ignore_unreachable: true
-  register: "conn"
-- block:
-  - name: Changing login details - Configure Ansible to use default `user` login details for a 'freshly-installed' system
-    set_fact:
-      ansible_user: "{{ default_user }}"
-      ansible_password: "{{ default_user_password }}"
-      ansible_ssh_private_key_file: ''
-      ansible_become_password: "{{ default_user_password }}"
-    when: "conn is mapping and conn.unreachable is defined and conn.unreachable"
+- name: Testing connection to determine correct login details
+  ansible.builtin.include_tasks:
+    file: sub_tasks/test_connection.yaml
 
 
-# ----------------------------------------------------------------------------------
-# Get distribition facts
-# ----------------------------------------------------------------------------------
-- name: Gather the distribution fact
-  setup:
-
-#- name: Showgathered distribution
-#  debug:
-#    msg: "{{ ansible_facts }}"
+- name: Get distribution facts
+  ansible.builtin.include_tasks:
+    file: sub_tasks/get_distribution_facts.yaml
 
 
-# ----------------------------------------------------------------------------------
-# Set custom become method
-# ----------------------------------------------------------------------------------
-- name: "Set 'become_method' if Ubuntu distribution"
-  set_fact:
-    custom_become_method: sudo
-  when: ansible_distribution == 'Ubuntu'  # Only for Ubuntu systems
-
-- name: "Set 'become_method' if Debian distribution"
-  set_fact:
-    custom_become_method: su
-  when: ansible_distribution == 'Debian' or ansible_distribution == 'Debian-Buster'   # Only for Debian systems
+- name: Set custom become method
+  ansible.builtin.include_tasks:
+    file: sub_tasks/set_become_method.yaml.yaml
 
 
 # ----------------------------------------------------------------------------------

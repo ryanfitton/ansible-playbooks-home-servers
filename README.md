@@ -13,8 +13,7 @@ Designed for systems running `Ubuntu 22.04` or `Debian 12.9.0` and later.
 
 * Install additional dependencies:
   * Install `sshpass` on Ubuntu 16.04 or similar: `apt-get install sshpass`
-
-  * Install sshpass on Mac OS: `brew install hudochenkov/sshpass/sshpass`
+  * Install `sshpass` on Mac OS: `brew install hudochenkov/sshpass/sshpass`
 
 
 ## Pre-requisites
@@ -23,7 +22,7 @@ Designed for systems running `Ubuntu 22.04` or `Debian 12.9.0` and later.
 
 * SSH Key files, some secret variables and template files are encrypted with Ansible vault. Ensure you have the correct password stored in `vault/vault.pass` to decrypt these variables.
 
-* You will need to decrypt the Ansible management user SSH private key, ensure your password to decrypt is specified in `vault/vault.pass` as this will always be used throughout the Playbooks: `ansible-vault decrypt --vault-password-file "vault/vault.pass" "ssh_keys/ansible/id_rsa"`
+* You will need to decrypt the Ansible management user SSH private key, ensure your password to decrypt is specified in `vault/vault.pass` as this will always be used throughout the Playbooks: `ansible-vault decrypt "ssh_keys/ansible/id_rsa"`
 
 
 
@@ -36,17 +35,18 @@ Add your password to the vault password file in `vault/vault.pass`
 
 ### Encrypt the SSH Private keys which will be used to communicate with the servers:
 
-* `ansible-vault encrypt --vault-password-file "vault/vault.pass" "ssh_keys/ansible/id_rsa" "ssh_keys/bethany/id_rsa" "ssh_keys/ryan/id_rsa"`
+* `ansible-vault encrypt "ssh_keys/ansible/id_rsa" "ssh_keys/user/id_rsa" "ssh_keys/bethany/id_rsa" "ssh_keys/ryan/id_rsa"`
 
 ### Encrypt other files which include secret data:
 
-* `ansible-vault encrypt --vault-password-file "vault/vault.pass" "playbooks/web-server/templates/vhost.default.hiccup.config.json"`
+* `ansible-vault encrypt "playbooks/web-server/templates/vhost.default.hiccup.config.json"`
 
 ### Encrypt individual passwords to a password file vault:
 
-* `ansible-vault encrypt_string --vault-password-file "vault/vault.pass" 'qn4mDx7U7jU7' --name 'management_user_password'`
-* `ansible-vault encrypt_string --vault-password-file "vault/vault.pass" 'CmCZ4dNqSTuv' --name 'ryan_password'`
-* `ansible-vault encrypt_string --vault-password-file "vault/vault.pass" '7KoZ7GtB68Fb' --name 'bethany_password'`
+* `ansible-vault encrypt_string 'qn4mDx7U7jU7' --name 'management_user_password'`
+* `ansible-vault encrypt_string 'kVR91uFaf0' --name 'user_password'`
+* `ansible-vault encrypt_string 'CmCZ4dNqSTuv' --name 'ryan_password'`
+* `ansible-vault encrypt_string '7KoZ7GtB68Fb' --name 'bethany_password'`
 
 
 
@@ -62,50 +62,59 @@ Add your password to the vault password file in `vault/vault.pass`
 
 ## General Commissioning
 All:
-* `ansible-playbook playbooks/commissioning/all.yaml -i inventory.yaml --vault-password-file vault/vault.pass`
+* `ansible-playbook playbooks/commissioning/all.yaml -i inventory.yaml`
+
+If you wanted to commision a specific group or node listed in `inventory.yaml` use:
+* Node: `ansible-playbook playbooks/commissioning/all.yaml -i inventory.yaml --limit 'proxmox-host01'`
+* Group: `ansible-playbook playbooks/commissioning/all.yaml -i inventory.yaml --limit 'WebServers'`
 
 
 ## Misc
-These are intended to be run as seperate Playbooks, so there is no option to run as 'all':
-* Ping hosts: `ansible-playbook playbooks/misc/ping.yaml -i inventory.yaml --vault-password-file vault/vault.pass`
-* List the inventory: `ansible-playbook playbooks/misc/inventory_info.yaml -i inventory.yaml --vault-password-file vault/vault.pass`
-* Update/Upgrade hosts packages: `ansible-playbook playbooks/misc/update_upgrade_packages_dist.yaml -i inventory.yaml --vault-password-file vault/vault.pass`
+These are intended to be run as seperate Playbooks on manually specified hosts, so there is no option to run as 'all':
+
+For exaple, run on the 'WebServers' group:
+* Ping hosts: `ansible-playbook playbooks/misc/ping.yaml -i inventory.yaml --limit 'WebServers'`
+* List the inventory: `ansible-playbook playbooks/misc/inventory_info.yaml -i inventory.yaml --limit 'WebServers'`
+* Update hosts packages: `ansible-playbook playbooks/misc/update_packages.yaml -i inventory.yaml --limit 'WebServers'`
+* Distribution upgrade on hosts packages: `ansible-playbook playbooks/misc/upgrade_distribution.yaml -i inventory.yaml --limit 'WebServers'`
+* Get disk usage: `ansible-playbook playbooks/misc/get_disk_usage.yaml -i inventory.yaml --limit 'WebServers'`
+* Get uptime: `ansible-playbook playbooks/misc/get_uptime.yaml -i inventory.yaml --limit 'WebServers'`
 
 
 ## File-Server
 Individual:
-* `ansible-playbook playbooks/file-server/commissioning.yaml -i inventory.yaml --vault-password-file vault/vault.pass`
-* `ansible-playbook playbooks/file-server/configuration.yaml -i inventory.yaml --vault-password-file vault/vault.pass`
+* `ansible-playbook playbooks/file-server/commissioning.yaml -i inventory.yaml`
+* `ansible-playbook playbooks/file-server/configuration.yaml -i inventory.yaml`
 
 Start:
-* `ansible-playbook playbooks/file-server/start.yaml -i inventory.yaml --vault-password-file vault/vault.pass`
+* `ansible-playbook playbooks/file-server/start.yaml -i inventory.yaml`
 
 Restart:
-* `ansible-playbook playbooks/file-server/restart.yaml -i inventory.yaml --vault-password-file vault/vault.pass`
+* `ansible-playbook playbooks/file-server/restart.yaml -i inventory.yaml`
 
 Stop:
-* `ansible-playbook playbooks/file-server/stop.yaml -i inventory.yaml --vault-password-file vault/vault.pass`
+* `ansible-playbook playbooks/file-server/stop.yaml -i inventory.yaml`
 
 All:
-* `ansible-playbook playbooks/file-server/all.yaml -i inventory.yaml --vault-password-file vault/vault.pass`
+* `ansible-playbook playbooks/file-server/all.yaml -i inventory.yaml`
 
 
 ## Media-Server
 Individual:
-* `ansible-playbook playbooks/media-server/commissioning.yaml -i inventory.yaml --vault-password-file vault/vault.pass`
-* `ansible-playbook playbooks/media-server/configuration.yaml -i inventory.yaml --vault-password-file vault/vault.pass`
+* `ansible-playbook playbooks/media-server/commissioning.yaml -i inventory.yaml`
+* `ansible-playbook playbooks/media-server/configuration.yaml -i inventory.yaml`
 
 Start:
-* `ansible-playbook playbooks/media-server/start.yaml -i inventory.yaml --vault-password-file vault/vault.pass`
+* `ansible-playbook playbooks/media-server/start.yaml -i inventory.yaml`
 
 Restart:
-* `ansible-playbook playbooks/media-server/restart.yaml -i inventory.yaml --vault-password-file vault/vault.pass`
+* `ansible-playbook playbooks/media-server/restart.yaml -i inventory.yaml`
 
 Stop:
-* `ansible-playbook playbooks/media-server/stop.yaml -i inventory.yaml --vault-password-file vault/vault.pass`
+* `ansible-playbook playbooks/media-server/stop.yaml -i inventory.yaml`
 
 All:
-* `ansible-playbook playbooks/media-server/all.yaml -i inventory.yaml --vault-password-file vault/vault.pass`
+* `ansible-playbook playbooks/media-server/all.yaml -i inventory.yaml`
 
 
 ## NVR-Server
@@ -114,74 +123,74 @@ Install requirements:
 * `ansible-galaxy collection install -r playbooks/nvr-server/meta/requirements.yml`
 
 Individual:
-* `ansible-playbook playbooks/nvr-server/commissioning.yaml -i inventory.yaml --vault-password-file vault/vault.pass`
+* `ansible-playbook playbooks/nvr-server/commissioning.yaml -i inventory.yaml`
 
 All:
-* `ansible-playbook playbooks/nvr-server/all.yaml -i inventory.yaml --vault-password-file vault/vault.pass`
+* `ansible-playbook playbooks/nvr-server/all.yaml -i inventory.yaml`
 
 
 ## Print-Server
 Individual:
-* `ansible-playbook playbooks/print-server/commissioning.yaml -i inventory.yaml --vault-password-file vault/vault.pass`
-* `ansible-playbook playbooks/print-server/configuration.yaml -i inventory.yaml --vault-password-file vault/vault.pass`
+* `ansible-playbook playbooks/print-server/commissioning.yaml -i inventory.yaml`
+* `ansible-playbook playbooks/print-server/configuration.yaml -i inventory.yaml`
 
 Start:
-* `ansible-playbook playbooks/print-server/start.yaml -i inventory.yaml --vault-password-file vault/vault.pass`
+* `ansible-playbook playbooks/print-server/start.yaml -i inventory.yaml`
 
 Restart:
-* `ansible-playbook playbooks/print-server/restart.yaml -i inventory.yaml --vault-password-file vault/vault.pass`
+* `ansible-playbook playbooks/print-server/restart.yaml -i inventory.yaml`
 
 Stop:
-* `ansible-playbook playbooks/print-server/stop.yaml -i inventory.yaml --vault-password-file vault/vault.pass`
+* `ansible-playbook playbooks/print-server/stop.yaml -i inventory.yaml`
 
 All:
-* `ansible-playbook playbooks/print-server/all.yaml -i inventory.yaml --vault-password-file vault/vault.pass`
+* `ansible-playbook playbooks/print-server/all.yaml -i inventory.yaml`
 
 
 ## Web-Server
 Individual:
-* `ansible-playbook playbooks/web-server/commissioning.yaml -i inventory.yaml --vault-password-file vault/vault.pass`
-* `ansible-playbook playbooks/web-server/configuration.yaml -i inventory.yaml --vault-password-file vault/vault.pass`
+* `ansible-playbook playbooks/web-server/commissioning.yaml -i inventory.yaml`
+* `ansible-playbook playbooks/web-server/configuration.yaml -i inventory.yaml`
 
 Upload custom Web files to the default Vhost web root (E.g. Hiccup - https://github.com/ryanfitton/hiccup-start-page-home-control/):
-* `ansible-playbook playbooks/web-server/update_default_vhost_web_root_files.yaml -i inventory.yaml --vault-password-file vault/vault.pass`
+* `ansible-playbook playbooks/web-server/update_default_vhost_web_root_files.yaml -i inventory.yaml`
 
 All:
-* `ansible-playbook playbooks/web-server/all.yaml -i inventory.yaml --vault-password-file vault/vault.pass`
+* `ansible-playbook playbooks/web-server/all.yaml -i inventory.yaml`
 
 Nginx:
 * Start:
-  * `ansible-playbook playbooks/web-server/start_nginx.yaml -i inventory.yaml --vault-password-file vault/vault.pass`
+  * `ansible-playbook playbooks/web-server/start_nginx.yaml -i inventory.yaml`
 
 * Restart:
-  * `ansible-playbook playbooks/web-server/restart_nginx.yaml -i inventory.yaml --vault-password-file vault/vault.pass`
+  * `ansible-playbook playbooks/web-server/restart_nginx.yaml -i inventory.yaml`
 
 * Stop:
-  * `ansible-playbook playbooks/web-server/stop_nginx.yaml -i inventory.yaml --vault-password-file vault/vault.pass`
+  * `ansible-playbook playbooks/web-server/stop_nginx.yaml -i inventory.yaml`
 
 * Reload:
-  * `ansible-playbook playbooks/web-server/reload_nginx.yaml -i inventory.yaml --vault-password-file vault/vault.pass`
+  * `ansible-playbook playbooks/web-server/reload_nginx.yaml -i inventory.yaml`
 
 PHP:
 * Start:
-  * `ansible-playbook playbooks/web-server/start_php.yaml -i inventory.yaml --vault-password-file vault/vault.pass`
+  * `ansible-playbook playbooks/web-server/start_php.yaml -i inventory.yaml`
 
 * Restart:
-  * `ansible-playbook playbooks/web-server/restart_php.yaml -i inventory.yaml --vault-password-file vault/vault.pass`
+  * `ansible-playbook playbooks/web-server/restart_php.yaml -i inventory.yaml`
 
 * Stop:
-  * `ansible-playbook playbooks/web-server/stop_php.yaml -i inventory.yaml --vault-password-file vault/vault.pass`
+  * `ansible-playbook playbooks/web-server/stop_php.yaml -i inventory.yaml`
   
 * Reload:
-  * `ansible-playbook playbooks/web-server/reload_php.yaml -i inventory.yaml --vault-password-file vault/vault.pass`
+  * `ansible-playbook playbooks/web-server/reload_php.yaml -i inventory.yaml`
 
 
 ## Network-Controller-Server
 Individual:
-* `ansible-playbook playbooks/network-controller-server/commissioning.yaml -i inventory.yaml --vault-password-file vault/vault.pass`
+* `ansible-playbook playbooks/network-controller-server/commissioning.yaml -i inventory.yaml`
 
 All:
-* `ansible-playbook playbooks/network-controller-server/all.yaml -i inventory.yaml --vault-password-file vault/vault.pass`
+* `ansible-playbook playbooks/network-controller-server/all.yaml -i inventory.yaml`
 
 
 ## Notes
@@ -196,17 +205,17 @@ All:
 You can these login with these keys, you will need to decrypt the SSH key first:
 
 ```
-ansible-vault decrypt --vault-password-file "vault/vault.pass" "ssh_keys/ansible/id_rsa"
+ansible-vault decrypt "ssh_keys/ansible/id_rsa"
 ssh -i ssh_keys/ansible/id_rsa ansible@10.0.10.103 -p1993
 ```
 
 ```
-ansible-vault decrypt --vault-password-file "vault/vault.pass" "ssh_keys/bethany/id_rsa"
+ansible-vault decrypt "ssh_keys/bethany/id_rsa"
 ssh -i ssh_keys/bethany/id_rsa bethany@10.0.10.103 -p1993
 ```
 
 ```
-ansible-vault decrypt --vault-password-file "vault/vault.pass" "ssh_keys/ryan/id_rsa"
+ansible-vault decrypt "ssh_keys/ryan/id_rsa"
 ssh -i ssh_keys/ryan/id_rsa ryan@10.0.10.103 -p1993
 ```
 
@@ -292,8 +301,3 @@ todo
 cron job service check for:
 Frigate - Using Docker
 Unifi - Using Docker
-
-
-
-
-Can I include a task within a task e.g. Gather Facts and Setting custom method, so it only has to be edited in one place

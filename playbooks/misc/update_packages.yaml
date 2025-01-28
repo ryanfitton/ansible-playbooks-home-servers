@@ -3,9 +3,8 @@
 # https://docs.ansible.com/ansible/latest/inventory_guide/intro_patterns.html
 
 
-- name: Update and Upgrade host packages
-  hosts: all
-  gather_facts: false
+- name: Update packages on the host
+  gather_facts: true
 
   vars_files:
     - ../../groups_vars/all.yaml
@@ -14,5 +13,5 @@
 #    - role: common
 
   tasks:
-    - include_tasks: tasks/update_upgrade_packages_dist.yaml
-      tags: ['update_upgrade']
+    - include_tasks: tasks/update_packages.yaml
+      tags: ['update_packages']

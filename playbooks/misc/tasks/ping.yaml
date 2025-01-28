@@ -1,7 +1,7 @@
 ---
 # This will ping the host
 
-- name: ICMP all Ansible hosts
+- name: ICMP Ping on host
   ansible.builtin.command: 'ping -c 2 {{ hostvars[item]["ansible_host"] }}'
   ignore_errors: true
   delegate_to: localhost

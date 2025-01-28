@@ -1,12 +1,12 @@
 ---
 # Inventory info
 
-- name: Print all Ansible info from the Inventory
+- name: Inventory on host
   debug:
     msg: '{{ hostvars[item] }}'
   loop: "{{ groups['all'] }}"
 
-- name: Print all Ansible hosts IP addresses from the Inventory
+- name: Print IP addresses from the Inventory
   debug:
     msg: '{{ hostvars[item]["ansible_host"] }}'
 #    msg: '{{ hostvars[item] }}'

@@ -3,7 +3,7 @@
 # https://docs.ansible.com/ansible/latest/inventory_guide/intro_patterns.html
 
 
-- name: Ping hosts
+- name: Get disk usage
   gather_facts: true
 
   vars_files:
@@ -13,5 +13,5 @@
 #    - role: common
 
   tasks:
-    - include_tasks: tasks/ping.yaml
-      tags: ['ping']
+    - include_tasks: tasks/get_disk_usage.yaml
+      tags: ['disk_usage']

@@ -3,7 +3,7 @@
 # https://docs.ansible.com/ansible/latest/inventory_guide/intro_patterns.html
 
 
-- name: Ping hosts
+- name: Update distribution on the host
   gather_facts: true
 
   vars_files:
@@ -13,5 +13,5 @@
 #    - role: common
 
   tasks:
-    - include_tasks: tasks/ping.yaml
-      tags: ['ping']
+    - include_tasks: tasks/update_distribution.yaml
+      tags: ['update_distribution']

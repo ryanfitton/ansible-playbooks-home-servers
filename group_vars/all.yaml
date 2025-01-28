@@ -27,6 +27,16 @@ user_groups:
   - "users"
 
 users:
+  - username: user            # This will be a generic shared user, e.g. access generic shared NAS files
+    password: !vault |
+      $ANSIBLE_VAULT;1.1;AES256
+      31373363356339666432646235393537643362303562386330386162653365393461663730346434
+      6332656163316263383866333433363665633663633533320a346364316231303135373731383361
+      61353764653661373765613838653061323139386131613135363363346166306534353033356161
+      3062303061613765340a636238613138636362613830356531373731373539303536633961383834
+      3638
+    group: "users"
+    ssh_public_key: "../../ssh_keys/user/id_rsa.pub"
   - username: ryan
     password: !vault |
       $ANSIBLE_VAULT;1.1;AES256
@@ -36,7 +46,7 @@ users:
       3632353337326130360a313439333439343861363061303961353335366132663534616134306639
       6265
     group: "users"
-    ssh_public_key: "../../ssh_keys/ryan/id_rsa.pub" # Location to the public key in this repo
+    ssh_public_key: "../../ssh_keys/ryan/id_rsa.pub"
   - username: bethany
     password: !vault |
       $ANSIBLE_VAULT;1.1;AES256
@@ -46,7 +56,7 @@ users:
       3237303834316330610a376336386339636138393231663235306565333132336139363739316265
       6465
     group: "users"
-    ssh_public_key: "../../ssh_keys/bethany/id_rsa.pub" # Location to the public key in this repo
+    ssh_public_key: "../../ssh_keys/bethany/id_rsa.pub"
 
 
 

@@ -2,15 +2,9 @@
 # This will configure ssh keys for the node
 
 
-# ----------------------------------------------------------------------------------
-# Get distribition facts
-# ----------------------------------------------------------------------------------
-- name: Gather the distribution fact
-  setup:
-
-#- name: Showgathered distribution
-#  debug:
-#    msg: "{{ ansible_facts }}"
+- name: Get distribution facts
+  ansible.builtin.include_tasks:
+    file: sub_tasks/get_distribution_facts.yaml
 
 
 # ----------------------------------------------------------------------------------

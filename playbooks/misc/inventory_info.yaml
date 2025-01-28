@@ -4,8 +4,7 @@
 
 
 - name: Ansible Inventory info
-  hosts: all
-  gather_facts: false
+  gather_facts: true
 
   vars_files:
     - ../../groups_vars/all.yaml

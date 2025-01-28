@@ -1,0 +1,16 @@
+---
+# Testing connection to determine correct login details
+# This is a `sub_task` as it's used more than once
+
+- name: "Test initial connection using logins stored in `ansible.cfg`."
+  ping:
+  ignore_unreachable: true
+  register: "conn"
+- block:
+  - name: Changing login details - Configure Ansible to use default `user` login details for a 'freshly-installed' system
+    set_fact:
+      ansible_user: "{{ default_user }}"
+      ansible_password: "{{ default_user_password }}"
+      ansible_ssh_private_key_file: ''
+      ansible_become_password: "{{ default_user_password }}"
+    when: "conn is mapping and conn.unreachable is defined and conn.unreachable"
