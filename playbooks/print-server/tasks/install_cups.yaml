@@ -32,11 +32,5 @@
     update_cache: yes
   notify: restart cups
 
-- name: Upgrade all apt packages
-  become: true
-  apt: 
-    upgrade: dist
-    update_cache: yes
-
 - name: "Force all notified handlers to run at this point, not waiting for normal sync points"
   ansible.builtin.meta: flush_handlers
