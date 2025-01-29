@@ -87,16 +87,17 @@
 
 # ----------------------------------------------------------------------------------
 # Update SSH settings to prevent passwords being used and to only allow SSH keys
+# Disabled as required for Proxmox
 # ----------------------------------------------------------------------------------
-- name: Configure SSH to disable use of Password authentication
-  become: true
-  lineinfile:
-    dest: /etc/ssh/sshd_config
-    regexp: '^PasswordAuthentication'
-    line: "PasswordAuthentication no"
-    state: present
-    backup: yes
-  notify: restart ssh  # Perform a final restart of ssh
+# - name: Configure SSH to disable use of Password authentication
+#   become: true
+#   lineinfile:
+#     dest: /etc/ssh/sshd_config
+#     regexp: '^PasswordAuthentication'
+#     line: "PasswordAuthentication no"
+#     state: present
+#     backup: yes
+#   notify: restart ssh  # Perform a final restart of ssh
 
 # Remove cloud-init config file introduced in Ubuntu 22.10 or later. This prevents publickey auth from working
 # https://github.com/geerlingguy/ansible-role-security/pull/124/files

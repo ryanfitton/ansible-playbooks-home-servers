@@ -13,7 +13,7 @@
 
 - name: Set custom become method
   ansible.builtin.include_tasks:
-    file: sub_tasks/set_become_method.yaml.yaml
+    file: sub_tasks/set_become_method.yaml
 
 
 # ----------------------------------------------------------------------------------

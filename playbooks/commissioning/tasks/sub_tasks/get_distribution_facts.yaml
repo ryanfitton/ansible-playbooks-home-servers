@@ -2,8 +2,13 @@
 # Get distribution facts
 # This is a `sub_task` as it's used more than once
 
-- name: Gather the distribution fact
+- name: Gather the distribution facts
   setup:
+
+- name: "Cache the gathered distribution facts"
+  set_fact:
+    ansible_facts: "{{ ansible_facts }}"
+    cacheable: yes
 
 - name: Show gathered distribution
   debug:
