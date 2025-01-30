@@ -1,4 +1,10 @@
 ---
+
+# - name: Determine 'become_method'
+#   ansible.builtin.include_tasks:
+#     file: sub_tasks/determine_become_method.yaml
+
+
 # This will configure the hostname from what is defined in `inventory.yaml`
 
 - name: Set a hostname

@@ -16,9 +16,9 @@
     file: sub_tasks/get_distribution_facts.yaml
 
 
-- name: Set custom become method
+- name: Determine 'become_method'
   ansible.builtin.include_tasks:
-    file: sub_tasks/set_become_method.yaml
+    file: sub_tasks/determine_become_method.yaml
   
 
 # ----------------------------------------------------------------------------------
@@ -62,18 +62,16 @@
 
 - name: Enable ssh service
   become: true
-  become_method: "{{ custom_become_method }}"
   ansible.builtin.service:
     name: ssh
     state: started
     enabled: true
 
 - debug:
-    msg: "NOTE: Now rebooting the machine as changed the SSH Service from Socket based to sshd may require a reboot"
+    msg: "NOTE: Now rebooting the machine as changing the SSH Service from Socket based to sshd may require a reboot"
 
 - name: Rebooting machine
   become: true
-  become_method: "{{ custom_become_method }}"
   changed_when: true
   ansible.builtin.reboot:
     reboot_timeout: 300
@@ -86,7 +84,6 @@
 # ----------------------------------------------------------------------------------
 - name: Setup custom SSH port {{ custom_ssh_port }}
   become: true
-  become_method: "{{ custom_become_method }}"
   changed_when: true
   lineinfile:
     dest: "/etc/ssh/sshd_config"
@@ -96,7 +93,6 @@
     backup: yes
   notify: 
     - restart ssh
-    - restart ssh su
 
 - name: "Force all notified handlers to run at this point, not waiting for normal sync points"
   ansible.builtin.meta: flush_handlers
@@ -104,6 +100,7 @@
 - name: Configure Ansible to use the new custom SSH port {{ custom_ssh_port }} for all future logins
   set_fact:
     ansible_port: "{{ custom_ssh_port }}"
+    cacheable: yes
 
 
 # ----------------------------------------------------------------------------------
@@ -111,53 +108,70 @@
 # ----------------------------------------------------------------------------------
 - name: Disable DNS use for SSH
   become: true
-  become_method: "{{ custom_become_method }}"
   lineinfile:
     dest: /etc/ssh/sshd_config
     regexp: '^UseDNS'
     line: "UseDNS no"
     state: present
     backup: yes
+  notify: 
+    - restart ssh
 
 - name: Disable empty passwords for SSH
   become: true
-  become_method: "{{ custom_become_method }}"
   lineinfile:
     dest: /etc/ssh/sshd_config
     regexp: '^PermitEmptyPasswords'
     line: "PermitEmptyPasswords yes"
     state: present
     backup: yes
+  notify: 
+    - restart ssh
 
 - name: Disable ChallengeResponseAuthentication for SSH
   become: true
-  become_method: "{{ custom_become_method }}"
   lineinfile:
     dest: /etc/ssh/sshd_config
     regexp: '^ChallengeResponseAuthentication'
     line: "ChallengeResponseAuthentication no"
     state: present
     backup: yes
+  notify: 
+    - restart ssh
 
 - name: Disable GSSAPIAuthentication for SSH
   become: true
-  become_method: "{{ custom_become_method }}"
   lineinfile:
     dest: /etc/ssh/sshd_config
     regexp: '^GSSAPIAuthentication'
     line: "GSSAPIAuthentication no"
     state: present
     backup: yes
+  notify: 
+    - restart ssh
 
 - name: Disable X11Forwarding for SSH
   become: true
-  become_method: "{{ custom_become_method }}"
   lineinfile:
     dest: /etc/ssh/sshd_config
     regexp: '^X11Forwarding'
     line: "X11Forwarding no"
     state: present
     backup: yes
+  notify: 
+    - restart ssh
 
 - name: "Force all notified handlers to run at this point, not waiting for normal sync points"
   ansible.builtin.meta: flush_handlers
+
+
+- debug:
+    msg: "NOTE: Now rebooting the machine as changing the SSH config options may require a reboot"
+
+- name: Rebooting machine
+  become: true
+  changed_when: true
+  ansible.builtin.reboot:
+    reboot_timeout: 300
+    msg: "Rebooting machine in 5 seconds"
+    # reboot_timeout: 3600

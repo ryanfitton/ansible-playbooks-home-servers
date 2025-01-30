@@ -4,6 +4,11 @@
 default_user: "user"
 default_user_password: "user"
 
+# If the default user is not 'root', specify the the root user's password
+# Double-check this is the correct password if you see any messages such as 'Incorrect Su/Sudo password'
+root_user_password: "user"
+
+
 
 
 # Management user, this will be used by the ansible CLI to login and manage the nodes
@@ -15,7 +20,8 @@ management_user_password: !vault |
   65326536633866306333336136653266393465666366613363353665383136363930653765656161
   3165623931623935640a616432383235356635326261393533343866306439383839636635636266
   3335
-management_user_ssh_public_key: "../../ssh_keys/ansible/id_rsa.pub" # Location to the public key in this repo
+management_user_ssh_private_key: "ansible/id_rsa"    # Location to the public key in this repo
+management_user_ssh_public_key: "ansible/id_rsa.pub" # Location to the public key in this repo
 management_user_groups: 
   - "admins"
   - "ansible"
@@ -27,7 +33,7 @@ user_groups:
   - "users"
 
 users:
-  - username: user            # This will be a generic shared user, e.g. access generic shared NAS files
+  - username: system            # This will be a generic shared user, e.g. access generic shared NAS files
     password: !vault |
       $ANSIBLE_VAULT;1.1;AES256
       31373363356339666432646235393537643362303562386330386162653365393461663730346434
@@ -36,7 +42,7 @@ users:
       3062303061613765340a636238613138636362613830356531373731373539303536633961383834
       3638
     group: "users"
-    ssh_public_key: "../../ssh_keys/user/id_rsa.pub"
+    ssh_public_key: "system/id_rsa.pub"
   - username: ryan
     password: !vault |
       $ANSIBLE_VAULT;1.1;AES256
@@ -46,7 +52,7 @@ users:
       3632353337326130360a313439333439343861363061303961353335366132663534616134306639
       6265
     group: "users"
-    ssh_public_key: "../../ssh_keys/ryan/id_rsa.pub"
+    ssh_public_key: "ryan/id_rsa.pub"
   - username: bethany
     password: !vault |
       $ANSIBLE_VAULT;1.1;AES256
@@ -56,7 +62,7 @@ users:
       3237303834316330610a376336386339636138393231663235306565333132336139363739316265
       6465
     group: "users"
-    ssh_public_key: "../../ssh_keys/bethany/id_rsa.pub"
+    ssh_public_key: "bethany/id_rsa.pub"
 
 
 

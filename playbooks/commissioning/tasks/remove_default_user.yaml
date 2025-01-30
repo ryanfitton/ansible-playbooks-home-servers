@@ -1,6 +1,11 @@
 ---
-# This will remove the default user from what is defined in `group_var/all.yaml`
 
+# - name: Determine 'become_method'
+#   ansible.builtin.include_tasks:
+#     file: sub_tasks/determine_become_method.yaml
+
+
+# This will remove the default user from what is defined in `group_var/all.yaml`
 
 # ----------------------------------------------------------------------------------
 # Remove the default user `{{ default_user }}`
@@ -23,9 +28,9 @@
 
 
 # ----------------------------------------------------------------------------------
-# Update SSHD settings
+# Allow login as root
 # ----------------------------------------------------------------------------------
-- name: Disable SSH Root Login
+- name: Force allow logins as root via SSH
   become: true
   lineinfile:
     dest: /etc/ssh/sshd_config
@@ -33,7 +38,8 @@
     line: "PermitRootLogin no"
     state: present
     backup: yes
-  notify: restart ssh  # Perform a final restart of ssh
+  notify: 
+    - restart ssh
 
 - name: "Force all notified handlers to run at this point, not waiting for normal sync points"
   ansible.builtin.meta: flush_handlers

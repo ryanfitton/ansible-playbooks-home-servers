@@ -35,7 +35,7 @@ Add your password to the vault password file in `vault/vault.pass`
 
 ### Encrypt the SSH Private keys which will be used to communicate with the servers:
 
-* `ansible-vault encrypt "ssh_keys/ansible/id_rsa" "ssh_keys/user/id_rsa" "ssh_keys/bethany/id_rsa" "ssh_keys/ryan/id_rsa"`
+* `ansible-vault encrypt "ssh_keys/ansible/id_rsa" "ssh_keys/system/id_rsa" "ssh_keys/bethany/id_rsa" "ssh_keys/ryan/id_rsa"`
 
 ### Encrypt other files which include secret data:
 
@@ -44,7 +44,7 @@ Add your password to the vault password file in `vault/vault.pass`
 ### Encrypt individual passwords to a password file vault:
 
 * `ansible-vault encrypt_string 'qn4mDx7U7jU7' --name 'management_user_password'`
-* `ansible-vault encrypt_string 'kVR91uFaf0' --name 'user_password'`
+* `ansible-vault encrypt_string 'kVR91uFaf0' --name 'system_password'`
 * `ansible-vault encrypt_string 'CmCZ4dNqSTuv' --name 'ryan_password'`
 * `ansible-vault encrypt_string '7KoZ7GtB68Fb' --name 'bethany_password'`
 
@@ -207,6 +207,11 @@ You can these login with these keys, you will need to decrypt the SSH key first:
 ```
 ansible-vault decrypt "ssh_keys/ansible/id_rsa"
 ssh -i ssh_keys/ansible/id_rsa ansible@10.0.10.103 -p1993
+```
+
+```
+ansible-vault decrypt "ssh_keys/system/id_rsa"
+ssh -i ssh_keys/system/id_rsa system@10.0.10.103 -p1993
 ```
 
 ```

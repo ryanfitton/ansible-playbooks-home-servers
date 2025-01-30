@@ -11,9 +11,9 @@
     file: sub_tasks/get_distribution_facts.yaml
 
 
-- name: Set custom become method
+- name: Determine 'become_method'
   ansible.builtin.include_tasks:
-    file: sub_tasks/set_become_method.yaml
+    file: sub_tasks/determine_become_method.yaml
 
 
 # ----------------------------------------------------------------------------------
@@ -22,7 +22,6 @@
 # Create a Management user which will be used by the Ansible CLI going-forwards specified in `ansible.cfg` as `remote_user`.
 - name: Create Management user groups '{{ management_user_groups }}'
   become: true
-  become_method: "{{ custom_become_method }}"
   ansible.builtin.group:
     name: "{{ item }}"
     state: present
@@ -30,7 +29,6 @@
 
 - name: Create Management user
   become: true
-  become_method: "{{ custom_become_method }}"
   ansible.builtin.user:
     name: "{{ management_user }}"
     state: present
@@ -41,7 +39,6 @@
 
 - name: Add Management user to groups
   become: true
-  become_method: "{{ custom_become_method }}"
   user:
     name: '{{ management_user }}'
     groups: "{{ item }}"
@@ -50,7 +47,6 @@
 
 - name: Allow management groups to have passwordless sudo
   become: true
-  become_method: "{{ custom_become_method }}"
   lineinfile:
     dest: /etc/sudoers
     state: present
@@ -64,6 +60,20 @@
     ansible_user: "{{ management_user }}"
     ansible_password: "{{ management_user_password }}"
     ansible_become_password: "{{ management_user_password }}"
+    ansible_become_method: sudo
+    cacheable: yes
+    
+- name: Switching Ansible to use `sudo` become_method now the Management User has passwordless sudo
+  block:
+    - debug:
+        msg: "{{ ansible_become_password }}"
+    - name: "Set 'ansible_become_method' to `true`"
+      set_fact:
+        switch_to_sudo_method: true
+        cacheable: yes
+    - name: Re-run 'Determine 'become_method' task
+      ansible.builtin.include_tasks:
+        file: sub_tasks/determine_become_method.yaml
 
 - name: Checking the Management user is set as the current user
   command: whoami

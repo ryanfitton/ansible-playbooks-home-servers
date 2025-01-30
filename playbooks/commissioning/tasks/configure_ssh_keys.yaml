@@ -7,12 +7,18 @@
     file: sub_tasks/get_distribution_facts.yaml
 
 
+# - name: Determine 'become_method'
+#   ansible.builtin.include_tasks:
+#     file: sub_tasks/determine_become_method.yaml
+
+
 # ----------------------------------------------------------------------------------
 # Changing login details - Configure Ansible to not use a Private SSH Key file for the `{{ management_user }}` as they're not installed just yet
 # ----------------------------------------------------------------------------------
 - name: Changing login details - Configure Ansible to not use a Private SSK Key file for the `{{ management_user }}` as they're not installed just yet
   set_fact:
     ansible_ssh_private_key_file: ''
+    cacheable: yes
 
 
 # ----------------------------------------------------------------------------------
@@ -30,7 +36,7 @@
 - name: Copy public key into Management users home directory
   become: true
   ansible.builtin.copy:
-    src: "{{ management_user_ssh_public_key }}"
+    src: "{{ (((playbook_dir + '../') + '../../ssh_keys/') + management_user_ssh_public_key) | realpath }}"
     dest: "/home/{{ management_user }}/.ssh/id_rsa.pub"
     owner: "{{ management_user }}"
     group: "{{ management_user }}"
@@ -57,7 +63,7 @@
 - name: Copy public keys into each user's home directory
   become: true
   ansible.builtin.copy:
-    src: "{{ item.ssh_public_key }}"
+    src: "{{ (((playbook_dir + '../') + '../../ssh_keys/') + item.ssh_public_key) | realpath }}"
     dest: "/home/{{ item.username }}/.ssh/id_rsa.pub"
     mode: 0644
     owner: "{{ item.username }}"
@@ -68,7 +74,8 @@
   become: true
   shell: cat  /home/{{ item.username }}/.ssh/id_rsa.pub >> /home/{{ item.username }}/.ssh/authorized_keys
   with_items: "{{ users }}"
-  notify: restart ssh  # Perform a final restart of ssh
+  notify: 
+    - restart ssh
 
 
 # ----------------------------------------------------------------------------------
@@ -82,22 +89,33 @@
     line: "PubkeyAuthentication yes"
     state: present
     backup: yes
-  notify: restart ssh 
+  notify: 
+    - restart ssh
 
 
 # ----------------------------------------------------------------------------------
 # Update SSH settings to prevent passwords being used and to only allow SSH keys
-# Disabled as required for Proxmox
 # ----------------------------------------------------------------------------------
-# - name: Configure SSH to disable use of Password authentication
-#   become: true
-#   lineinfile:
-#     dest: /etc/ssh/sshd_config
-#     regexp: '^PasswordAuthentication'
-#     line: "PasswordAuthentication no"
-#     state: present
-#     backup: yes
-#   notify: restart ssh  # Perform a final restart of ssh
+- name: Allow password login still to be used on SSH
+  become: true
+  lineinfile:
+    dest: /etc/ssh/sshd_config
+    regexp: '^PasswordAuthentication'
+    line: "PasswordAuthentication no"
+    state: present
+    backup: yes
+  notify: 
+    - restart ssh
+
+
+# ----------------------------------------------------------------------------------
+# Changing login details - Configure Ansible to use a Private SSK Key file for the `{{ management_user }}` as the SSH config now requires keys
+# ----------------------------------------------------------------------------------
+- name: Changing login details - Configure Ansible to use a Private SSK Key file for the `{{ management_user }}` as the SSH config now requires keys
+  set_fact:
+   ansible_ssh_private_key_file: "{{ (((playbook_dir + '../') + '../../ssh_keys/') + management_user_ssh_private_key) | realpath }}"
+   cacheable: yes
+
 
 # Remove cloud-init config file introduced in Ubuntu 22.10 or later. This prevents publickey auth from working
 # https://github.com/geerlingguy/ansible-role-security/pull/124/files
@@ -112,5 +130,27 @@
   notify: restart ssh                       # Perform a final restart of ssh
   when: ansible_distribution == 'Ubuntu'    # Only for Ubuntu systems
 
+
+
+
+
+
+
+
+
+
+
 - name: "Force all notified handlers to run at this point, not waiting for normal sync points"
   ansible.builtin.meta: flush_handlers
+
+
+- debug:
+    msg: "NOTE: Now rebooting the machine as changing the SSH config options may require a reboot"
+
+- name: Rebooting machine
+  become: true
+  changed_when: true
+  ansible.builtin.reboot:
+    reboot_timeout: 300
+    msg: "Rebooting machine in 5 seconds"
+    # reboot_timeout: 3600
