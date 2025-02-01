@@ -68,7 +68,8 @@ users:
 
 # Hostname Details
 hostname_prefix: ''
-hostname_suffix: '.home.lan'
+hostname_suffix: ''
+hostname_domain: '.home.lan'
 
 
 

@@ -7,7 +7,25 @@
 
 # This will configure the hostname from what is defined in `inventory.yaml`
 
-- name: Set a hostname
+- name: Find the current hostname
+  set_fact:
+    current_hostname: "{{ ansible_hostname }}"
+    new_hostname: "{{ (hostname_prefix + inventory_hostname + hostname_suffix) }}"
+    new_fqdn_hostname: "{{ (hostname_prefix + inventory_hostname + hostname_suffix + hostname_domain) }}"
+
+- name: Info about hostname changes
+  ansible.builtin.debug:
+    msg: "The current hostname is: '{{ ansible_hostname }}'. This will be changed to '{{ new_hostname }}'. The new FQDN hostname will be '{{ new_fqdn_hostname }}'"
+
+- name: Update the hostname
   become: true
   ansible.builtin.hostname:
-    name: '{{ hostname_prefix }}{{ inventory_hostname }}{{ hostname_suffix }}'
+    name: '{{ new_hostname }}'
+
+- name: Update hostname in '/etc/hosts'
+  become: true
+  lineinfile:
+    path: /etc/hosts
+    regexp: "^{{ ansible_default_ipv4.address }}"
+    line: "{{ ansible_default_ipv4.address }} {{ new_fqdn_hostname }} {{ new_hostname }}"
+    state: present
