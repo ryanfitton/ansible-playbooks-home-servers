@@ -1,13 +1,6 @@
 ---
 # Inventory info
 
-- name: Inventory on host
-  debug:
-    msg: '{{ hostvars[item] }}'
-  loop: "{{ groups['all'] }}"
-
 - name: Print IP addresses from the Inventory
   debug:
-    msg: '{{ hostvars[item]["ansible_host"] }}'
-#    msg: '{{ hostvars[item] }}'
-  loop: "{{ groups['all'] }}"
+    msg: '{{ ansible_default_ipv4.address }}'
