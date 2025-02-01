@@ -61,6 +61,8 @@ Add your password to the vault password file in `vault/vault.pass`
 # Ansible playbooks
 
 ## General Commissioning
+This targets: `all` hosts.
+
 All:
 * `ansible-playbook playbooks/commissioning/all.yaml -i inventory.yaml`
 
@@ -82,6 +84,8 @@ For exaple, run on the 'WebServers' group by speciying a value for `target`:
 
 
 ## File-Server
+This targets: `FileServers` hosts.
+
 Individual:
 * `ansible-playbook playbooks/file-server/commissioning.yaml -i inventory.yaml`
 * `ansible-playbook playbooks/file-server/configuration.yaml -i inventory.yaml`
@@ -100,6 +104,8 @@ All:
 
 
 ## Media-Server
+This targets: `MediaServers` hosts.
+
 Individual:
 * `ansible-playbook playbooks/media-server/commissioning.yaml -i inventory.yaml`
 * `ansible-playbook playbooks/media-server/configuration.yaml -i inventory.yaml`
@@ -118,6 +124,8 @@ All:
 
 
 ## NVR-Server
+This targets: `NvrServers` hosts.
+
 Install requirements:
 * `ansible-galaxy install -r playbooks/nvr-server/meta/requirements.yml`
 * `ansible-galaxy collection install -r playbooks/nvr-server/meta/requirements.yml`
@@ -130,6 +138,8 @@ All:
 
 
 ## Print-Server
+This targets: `PrintServers` hosts.
+
 Individual:
 * `ansible-playbook playbooks/print-server/commissioning.yaml -i inventory.yaml`
 * `ansible-playbook playbooks/print-server/configuration.yaml -i inventory.yaml`
@@ -148,6 +158,8 @@ All:
 
 
 ## Web-Server
+This targets: `WebServers` hosts.
+
 Individual:
 * `ansible-playbook playbooks/web-server/commissioning.yaml -i inventory.yaml`
 * `ansible-playbook playbooks/web-server/configuration.yaml -i inventory.yaml`
@@ -186,6 +198,8 @@ PHP:
 
 
 ## Network-Controller-Server
+This targets: `NetworkControllerServers` hosts.
+
 Individual:
 * `ansible-playbook playbooks/network-controller-server/commissioning.yaml -i inventory.yaml`
 
