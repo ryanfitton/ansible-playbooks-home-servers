@@ -20,11 +20,11 @@
     system: yes
     createhome: no
     
-- name: Create Media root directory
+- name: Create Frigate Media root directory
   become: true
   file:
     state: directory
-    path: "{{ media_root }}"
+    path: "{{ frigate_media_root }}"
     owner: "{{ frigate_user }}"
     group: "{{ frigate_group }}"
     mode: '0755'

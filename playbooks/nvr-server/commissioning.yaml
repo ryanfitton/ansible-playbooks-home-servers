@@ -73,9 +73,11 @@
                       - record
         frigate_docker_privileged: true
         frigate_docker_storage_use_docker_volume: false
-        frigate_docker_storage_bind_path: "{{ media_root }}"
+        frigate_docker_storage_bind_path: "{{ frigate_media_root }}"
 
   pre_tasks:
+    - include_tasks: tasks/setup_drive_mounts.yaml
+      tags: ['mounts']
     - include_tasks: tasks/pre_tasks.yaml
       tags: ['frigate']
 

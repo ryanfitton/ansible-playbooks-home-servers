@@ -1,4 +1,15 @@
 ---
+# Mount Point Root paths
+drive_mount_root: "/datastore"    # Drives should be mounted in this folder
+
+# List of drives to mount. These drives should be assigned to this host from the hypervisor.
+drive_mounts:
+  - name: "/dev/sdb"
+    mount_path: "{{ drive_mount_root }}/mediadata/"
+    file_system_type: "ext4"
+    mount_on_boot: true
+
+    
 # .deb install package
 # Download from: https://emby.media/linux-server.html
 emby_deb_package: | 
@@ -7,7 +18,7 @@ emby_deb_package: |
   "{{ 'https://github.com/MediaBrowser/Emby.Releases/releases/download/4.8.10.0/emby-server-deb_4.8.10.0_amd64.deb' if ansible_architecture == 'x86_64' }}"
 
 # Shared media locations with disk from Hypervisor
-media_root: "/datastore/mediadata/"
+emby_media_root: "{{ drive_mount_root }}/mediadata/"
 
 # Emby service
 emby_service: emby-server

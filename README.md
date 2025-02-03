@@ -249,7 +249,7 @@ Use same login accounts as system users
 Setup configuration for shares in `playbooks/file-server/vars/all.yaml`
 By default, this share will be created: `nasdata`
 smb://10.0.10.103/nasdata/
-You will need to attach the storage disk to this folder: `/datastore/nasdata/`
+You will need to attach the additional storage disk from the hypervisor to this node. `/dev/sdb` mounts in the host to `/datastore/nasdata`.
 
 
 
@@ -260,7 +260,7 @@ http://10.0.10.102:8096/
 
 Setup configuration for shares in `playbooks/media-server/vars/all.yaml`
 
-You will need to attach the storage disk to this folder: `/datastore/mediadata/`
+You will need to attach the additional storage disk from the hypervisor to this node. `/dev/sdb` mounts in the host to `/datastore/mediadata`.
 
 
 
@@ -269,7 +269,7 @@ Setup URL: https://10.0.10.104:8971
 
 Setup configuration for shares in `playbooks/media-server/vars/all.yaml`
 
-You will need to attach the storage disk to this folder: `/datastore/cctvdata/`
+You will need to attach the additional storage disk from the hypervisor to this node. `/dev/sdb` mounts in the host to `/datastore/nvrdata`.
 
 Logins;
 admin
@@ -320,3 +320,35 @@ todo
 cron job service check for:
 Frigate - Using Docker
 Unifi - Using Docker
+
+
+
+
+
+Mount hard drive in vm:
+
+
+fileserver mount hard drive at folder:
+
+/datastore/nasdata/
+
+df -h
+
+lsblk
+
+
+sdb
+
+https://forum.proxmox.com/threads/can-i-create-a-zfs-volume-in-proxmox-then-mount-and-format-it-on-my-vm.71443/
+
+
+specify disk path: /dev/sdb
+check the path is formatted
+mount the datapath to the folder: /datastore/nasdata
+
+format the disk
+
+
+
+
+Then, increase the attached disk size to that in the spreadsheet

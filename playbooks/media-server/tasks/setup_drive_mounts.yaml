@@ -1,0 +1,57 @@
+---
+# This will configure the drive mounts
+
+- name: "Create mount directory"
+  become: true
+  file:
+    state: directory
+    path: "{{ drive_mount_root }}"
+    owner: root
+    group: root
+    mode: '0755'
+
+- name: Run drive mount configuration when there is data provided
+  when: 'drive_mounts|length > 0'
+  block:
+    - name: "Create directory for mount point if it does not already exist"
+      become: true
+      with_items: "{{ drive_mounts }}"
+      file:
+        state: directory
+        path: "{{ item.mount_path }}"
+        owner: root
+        group: root
+        mode: '0755'
+
+    - name: "Create an {{ item.file_system_type }} filesystem on {{ item.name }}"
+      become: true
+      with_items: "{{ drive_mounts }}"
+      community.general.filesystem:
+        fstype: "{{ item.file_system_type }}"
+        state: present
+        dev: "{{ item.name }}"
+
+    - name: "Mount {{ item.name }}"
+      become: true
+      with_items: "{{ drive_mounts }}"
+      ansible.posix.mount:
+        path: "{{ item.mount_path }}"
+        src: "{{ item.name }}"
+        fstype: "{{ item.file_system_type }}"
+        opts: defaults
+        state: mounted
+        boot: "{{ item.mount_on_boot }}"
+
+    - name: "Output from lsblk"
+      become: true
+      shell:
+        cmd: lsblk
+      register: lsblk_output
+      ignore_errors: true
+      changed_when: true
+
+    - name: "Result from lsblk"
+      debug: msg="{{ lsblk_output.stdout }}"
+
+    - name: "Force all notified handlers to run at this point, not waiting for normal sync points"
+      ansible.builtin.meta: flush_handlers

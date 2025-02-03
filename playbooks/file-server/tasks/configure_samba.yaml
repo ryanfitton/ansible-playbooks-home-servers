@@ -3,79 +3,71 @@
 # You will be able to access the file shares using the user logins defined in;
 # `group_vars/all.yaml` e.g. "ryanfitton"
 
-- name: Create Samba users if they don't exist yet                      # `user_password` from `group_vars/all.yaml`
-  become: true
-  shell: >
-    set -o nounset -o pipefail -o errexit &&
-    (pdbedit --user={{ item.username }} 2>&1 > /dev/null) \
-    || (echo {{ item.password }}; echo {{ item.password }}) \
-    | smbpasswd -s -a {{ item.username }}
-  args:
-    executable: /bin/bash
-  with_items: "{{ users }}"                                             # `users` from `group_vars/all.yaml`
-  register: create_user_output
-  changed_when: "'Added user' in create_user_output.stdout"
-  tags: samba
+- name: Run samba share configuration when there is data provided
+  when: 'samba_shares|length > 0'
+  block:
+    - name: Create Samba users if they don't exist yet                      # `user_password` from `group_vars/all.yaml`
+      become: true
+      shell: >
+        set -o nounset -o pipefail -o errexit &&
+        (pdbedit --user={{ item.username }} 2>&1 > /dev/null) \
+        || (echo {{ item.password }}; echo {{ item.password }}) \
+        | smbpasswd -s -a {{ item.username }}
+      args:
+        executable: /bin/bash
+      with_items: "{{ users }}"                                             # `users` from `group_vars/all.yaml`
+      register: create_user_output
+      changed_when: "'Added user' in create_user_output.stdout"
+      tags: samba
 
-- name: Create Samba shares root directory
-  become: true
-  file:
-    state: directory
-    path: "{{ samba_shares_root }}"
-    owner: root
-    group: root
-    mode: '0755'
-  when: samba_shares|length > 0
-  tags: samba
+    - name: Create share directories
+      become: true
+      with_items: "{{ samba_shares }}"
+      file:
+        state: directory
+        path: "{{ item.path|default([samba_root,item.name]|join('/')) }}"
+        owner: "{{ item.owner|default('root') }}"
+        group: "{{ item.group|default('users') }}"
+        mode: "{{ item.directory_mode|default('0775') }}"
+        setype: "{{ item.setype|default('samba_share_t') }}"
+      tags: samba
 
-- name: Create share directories
-  become: true
-  with_items: "{{ samba_shares }}"
-  file:
-    state: directory
-    path: "{{ item.path|default([samba_shares_root,item.name]|join('/')) }}"
-    owner: "{{ item.owner|default('root') }}"
-    group: "{{ item.group|default('users') }}"
-    mode: "{{ item.directory_mode|default('0775') }}"
-    setype: "{{ item.setype|default('samba_share_t') }}"
-  tags: samba
+    - name: Ensure webserver document root exists
+      become: true
+      file:
+        name: "{{ samba_www_documentroot }}"
+        state: directory
+      when: samba_www_documentroot
+      tags: samba
 
-- name: Ensure webserver document root exists
-  become: true
-  file:
-    name: "{{ samba_www_documentroot }}"
-    state: directory
-  when: samba_www_documentroot
-  tags: samba
+    - name: Create link to shares in webserver document root
+      become: true
+      file:
+        state: link
+        path: "{{ samba_www_documentroot }}/{{ item.name }}"
+        src: "{{ item.path|default([samba_root,item.name]|join('/')) }}"
+      with_items: "{{ samba_shares }}"
+      when: samba_www_documentroot
+      tags: samba
 
-- name: Create link to shares in webserver document root
-  become: true
-  file:
-    state: link
-    path: "{{ samba_www_documentroot }}/{{ item.name }}"
-    src: "{{ item.path|default([samba_shares_root,item.name]|join('/')) }}"
-  with_items: "{{ samba_shares }}"
-  when: samba_www_documentroot
-  tags: samba
+    - name: Samba configuration
+      become: true
+      template:
+        dest: "{{ samba_configuration }}"
+        src: smb.conf
+        validate: 'testparm -s %s'
+      tags: samba
+      notify: restart samba
 
-- name: Samba configuration
-  become: true
-  template:
-    dest: "{{ samba_configuration }}"
-    src: smb.conf
-    validate: 'testparm -s %s'
-  tags: samba
-  notify: restart samba
+    - name: Install global include file
+      become: true
+      template:
+        src: "{{ samba_global_include }}"
+        dest: "{{ samba_configuration_dir }}"
+        validate: 'testparm -s %s'
+      when: samba_global_include is defined
+      notify: restart samba
+      tags: samba
 
-- name: Install global include file
-  become: true
-  template:
-    src: "{{ samba_global_include }}"
-    dest: "{{ samba_configuration_dir }}"
-    validate: 'testparm -s %s'
-  when: samba_global_include is defined
-  notify: restart samba
-  tags: samba
-
-- name: "Force all notified handlers to run at this point, not waiting for normal sync points"
-  ansible.builtin.meta: flush_handlers
+    - name: "Force all notified handlers to run at this point, not waiting for normal sync points"
+      ansible.builtin.meta: flush_handlers

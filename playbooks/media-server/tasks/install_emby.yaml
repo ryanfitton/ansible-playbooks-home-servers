@@ -22,11 +22,11 @@
     system: yes
     createhome: yes
     
-- name: Create Media root directory
+- name: Create Media directory
   become: true
   file:
     state: directory
-    path: "{{ media_root }}"
+    path: "{{ emby_media_root }}"
     owner: "{{ emby_user }}"
     group: "{{ emby_group }}"
     mode: '0755'

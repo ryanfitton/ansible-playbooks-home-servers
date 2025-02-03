@@ -1,6 +1,17 @@
 ---
+# Mount Point Root paths
+drive_mount_root: "/datastore"    # Drives should be mounted in this folder
+
+# List of drives to mount. These drives should be assigned to this host from the hypervisor.
+drive_mounts:
+  - name: "/dev/sdb"
+    mount_path: "{{ drive_mount_root }}/nvrdata/"
+    file_system_type: "ext4"
+    mount_on_boot: true
+
+
 # Shared media locations with disk from Hypervisor
-media_root: "/datastore/cctvdata/"
+frigate_media_root: "{{ drive_mount_root }}/nvrdata/"
 
 # Frigate system user details
 frigate_user: frigate
