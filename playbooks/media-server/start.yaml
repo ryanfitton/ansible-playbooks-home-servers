@@ -14,8 +14,8 @@
 #    - role: media-server
 
   tasks:
-    - include_tasks: tasks/start_emby.yaml
-      tags: ['emby']
+    - include_tasks: tasks/start_jellyfin.yaml
+      tags: ['jellyfin']
 
   handlers:
     - import_tasks: handlers/main.yaml

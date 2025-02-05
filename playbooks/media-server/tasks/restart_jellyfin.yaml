@@ -1,0 +1,10 @@
+---
+# This will restart Jellyfin
+
+- name: Restart Jellyfin
+  become: true
+  changed_when: true
+  ansible.builtin.debug:
+    msg: "{{ ansible_host }}: Restarting Jellyfin"
+  notify:
+    - restart jellyfin

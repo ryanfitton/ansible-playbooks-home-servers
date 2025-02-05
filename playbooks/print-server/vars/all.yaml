@@ -1,5 +1,5 @@
 ---
-# Emby system user details
+# Print Server system user details
 cups_management_user : print
 cups_management_user_password : print
 cups_management_user_groups: 

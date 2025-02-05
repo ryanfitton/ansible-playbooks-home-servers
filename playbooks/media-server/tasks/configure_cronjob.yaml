@@ -11,6 +11,6 @@
 - name: Setup service check Cronjob
   become: true
   ansible.builtin.cron:
-    name: "Emby service check Cronjob"
+    name: "Jellyfin service check Cronjob"
     minute: "0"
     job: "/service_check.sh"

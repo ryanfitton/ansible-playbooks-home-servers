@@ -3,7 +3,7 @@
 # https://docs.ansible.com/ansible/latest/inventory_guide/intro_patterns.html
 
 
-- name: Restart Emby on Media-Server
+- name: Restart Jellyfin on Media-Server
   hosts: MediaServers
 
   vars_files:
@@ -14,8 +14,8 @@
 #    - role: media-server
 
   tasks:
-    - include_tasks: tasks/restart_emby.yaml
-      tags: ['emby']
+    - include_tasks: tasks/restart_jellyfin.yaml
+      tags: ['jellyfin']
 
   handlers:
     - import_tasks: handlers/main.yaml

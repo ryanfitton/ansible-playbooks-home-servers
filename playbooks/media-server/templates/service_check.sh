@@ -1,7 +1,7 @@
 #!/bin/bash
 
-# Restart {{ emby_service }} if not running
-SERVICENAME="{{ emby_service }}"
+# Restart {{ jellyfin_service }} if not running
+SERVICENAME="{{ jellyfin_service }}"
 
 systemctl is-active --quiet $SERVICENAME
 STATUS=$? # return value is 0 if running

@@ -1,0 +1,10 @@
+---
+# This will stop Jellyfin
+
+- name: Stop Jellyfin
+  become: true
+  changed_when: true
+  ansible.builtin.debug:
+    msg: "{{ ansible_host }}: Stopping Jellyfin"
+  notify:
+    - stop jellyfin

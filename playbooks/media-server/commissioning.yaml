@@ -16,8 +16,8 @@
   tasks:
     - include_tasks: tasks/setup_drive_mounts.yaml
       tags: ['mounts']
-    - include_tasks: tasks/install_emby.yaml
-      tags: ['emby']
+    - include_tasks: tasks/install_jellyfin.yaml
+      tags: ['jellyfin']
     
   handlers:
     - import_tasks: handlers/main.yaml

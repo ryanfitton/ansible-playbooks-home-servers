@@ -1,0 +1,41 @@
+---
+# This will install Jellyfin
+
+# This will setup the required packages for Jellyfin
+
+# Add the user with a primary group
+- name: Create group for Jellyfin
+  become: true
+  ansible.builtin.group:
+    name: "{{ Jellyfin_group }}"
+    state: present
+
+# Add the user with a primary group
+- name: Create user for Jellyfin
+  become: true
+  ansible.builtin.user:
+    name: "{{ jellyfin_user }}"
+    comment: "{{ jellyfin_service }} user"
+    state: present
+    group: "{{ jellyfin_group }}"
+    shell: /bin/bash
+    system: yes
+    createhome: yes
+    
+- name: Create Media directory
+  become: true
+  file:
+    state: directory
+    path: "{{ jellyfin_media_root }}"
+    owner: "{{ jellyfin_user }}"
+    group: "{{ jellyfin_group }}"
+    mode: '0755'
+
+- name: Install Jellyfin
+  become: true
+  shell: curl https://repo.jellyfin.org/install-debuntu.sh | sudo bash
+  notify:
+    - restart jellyfin
+
+- name: "Force all notified handlers to run at this point, not waiting for normal sync points"
+  ansible.builtin.meta: flush_handlers
