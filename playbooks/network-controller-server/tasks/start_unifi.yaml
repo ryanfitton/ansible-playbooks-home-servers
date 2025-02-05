@@ -1,0 +1,10 @@
+---
+# This will start Unifi
+
+- name: Start Unifi
+  become: true
+  changed_when: true
+  ansible.builtin.debug:
+    msg: "{{ ansible_host }}: Starting Unifi"
+  notify:
+    - start unifi

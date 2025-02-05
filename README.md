@@ -206,6 +206,16 @@ Individual:
 All:
 * `ansible-playbook playbooks/network-controller-server/all.yaml -i inventory.yaml`
 
+Unifi:
+* Start:
+  * `ansible-playbook playbooks/network-controller-server/start.yaml -i inventory.yaml`
+
+* Restart:
+  * `ansible-playbook playbooks/network-controller-server/restart.yaml -i inventory.yaml`
+
+* Stop:
+  * `ansible-playbook playbooks/network-controller-server/stop.yaml -i inventory.yaml`
+
 
 ## Notes
 
@@ -312,6 +322,13 @@ ubnt
 
 Setup configuration for shares in `playbooks/network-controller-server/vars/all.yaml`
 
+
+Use Unifi networks login
+
+or local account
+
+admin
+3-Bd4@?c2$#!]8<7{1}0)f6,&5(t
 
 
 

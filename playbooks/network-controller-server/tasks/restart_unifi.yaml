@@ -1,0 +1,10 @@
+---
+# This will restart Unifi
+
+- name: Restart Unifi
+  become: true
+  changed_when: true
+  ansible.builtin.debug:
+    msg: "{{ ansible_host }}: Restarting Unifi"
+  notify:
+    - restart unifi

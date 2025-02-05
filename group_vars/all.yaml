@@ -9,8 +9,6 @@ default_user_password: "user"
 root_user_password: "user"
 
 
-
-
 # Management user, this will be used by the ansible CLI to login and manage the nodes
 management_user: "ansible"
 management_user_password: !vault |
@@ -25,7 +23,6 @@ management_user_ssh_public_key: "ansible/id_rsa.pub" # Location to the public ke
 management_user_groups: 
   - "admins"
   - "ansible"
-
 
 
 # Create a list of standard user accounts
@@ -65,12 +62,10 @@ users:
     ssh_public_key: "bethany/id_rsa.pub"
 
 
-
 # Hostname Details
 hostname_prefix: ''
 hostname_suffix: ''
 hostname_domain: '.home.lan'
-
 
 
 # Specify SSH Details
@@ -81,6 +76,9 @@ default_ssh_port: 22
 custom_ssh_port: 1993 
 
 
-
 # NTP Server
 timezone: 'Europe/London'
+
+
+# Misc
+admin_email: 'ryan@ryanfitton.co.uk'  # Admin email address for any services which require it

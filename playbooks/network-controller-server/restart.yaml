@@ -1,0 +1,21 @@
+---
+# This playbook deploys the whole application stack in this site.
+# https://docs.ansible.com/ansible/latest/inventory_guide/intro_patterns.html
+
+
+- name: Restart Unifi on Network-Controller-Server
+  hosts: NetworkControllerServers
+
+  vars_files:
+    - ../../groups_vars/all.yaml
+    - vars/all.yaml
+
+#  roles:
+#    - role: network-controller-server
+
+  tasks:
+    - include_tasks: tasks/restart_unifi.yaml
+      tags: ['unifi']
+
+  handlers:
+    - import_tasks: handlers/main.yaml

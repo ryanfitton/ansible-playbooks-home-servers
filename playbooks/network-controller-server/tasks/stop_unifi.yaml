@@ -1,0 +1,10 @@
+---
+# This will stop Unifi
+
+- name: Stop Unifi
+  become: true
+  changed_when: true
+  ansible.builtin.debug:
+    msg: "{{ ansible_host }}: Stopping Unifi"
+  notify:
+    - stop unifi
