@@ -29,11 +29,11 @@
                 default: 30
                 mode: motion
           cameras:
-            "IP-DOORBELL-FRONT":
-              enabled: true
+            "IP-CAM-SIDE-LEFT":
+              enabled: false
               ffmpeg:
                 inputs:
-                  - path: rtsp://admin:5cv6z3d29s@10.0.20.105:554
+                  - path: rtsp://u4486654:SkN6HGfaRs@10.0.20.100:554/s0
                     roles:
                       - record
             "IP-CAM-FRONT":
@@ -50,25 +50,18 @@
                   - path: rtsp://u7598642:6RTvJzwE9Y@10.0.20.102:554/s0
                     roles:
                       - record
-            "IP-CAM-SIDE-LEFT":
-              enabled: false
-              ffmpeg:
-                inputs:
-                  - path: rtsp://u4486654:SkN6HGfaRs@10.0.20.103:554/s0
-                    roles:
-                      - record
             "IP-CAM-SIDE-RIGHT":
               enabled: false
               ffmpeg:
                 inputs:
-                  - path: rtsp://u9875621:DXV9B7z6jK@10.0.20.104:554/s0
+                  - path: rtsp://u9875621:DXV9B7z6jK@10.0.20.103:554/s0
                     roles:
                       - record
-            "IP-CAM-WIFI":
-              enabled: false
+            "IP-DOORBELL-FRONT":
+              enabled: true
               ffmpeg:
                 inputs:
-                  - path: rtsp://u8273:ieYWSh23@10.0.20.100:554/videoMain
+                  - path: rtsp://admin:5cv6z3d29s@10.0.20.104:554
                     roles:
                       - record
         frigate_docker_privileged: true

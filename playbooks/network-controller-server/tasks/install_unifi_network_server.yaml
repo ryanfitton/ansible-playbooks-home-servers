@@ -5,7 +5,7 @@
 # Follows the steps defined here: https://help.ui.com/hc/en-us/articles/360012282453-Self-Hosting-a-UniFi-Network-Server
 # And: https://www.reddit.com/r/UNIFI/comments/1deaeoj/how_to_guide_installing_unifi_network_application/
 
-- name: Install required pre-prerequisite paclages
+- name: Install required pre-prerequisite packages
   become: true
   ansible.builtin.apt:
     name:
