@@ -26,8 +26,9 @@
     - name: "Create an {{ item.file_system_type }} filesystem on {{ item.name }}"
       become: true
       with_items: "{{ drive_mounts }}"
+      when: 'item.format_drive == true'
       community.general.filesystem:
-        fstype: "{{ item.file_system_type }}"
+        fstype: "{{ item.file_system_type|default('ext4') }}"
         state: present
         dev: "{{ item.name }}"
 
@@ -37,9 +38,9 @@
       ansible.posix.mount:
         path: "{{ item.mount_path }}"
         src: "{{ item.name }}"
-        fstype: "{{ item.file_system_type }}"
-        opts: defaults
-        state: mounted
+        fstype: "{{ item.file_system_type|default('ext4') }}"
+        opts: "{{ item.options|default('defaults') }}"
+        state: "{{ item.state|default('mounted') }}"
         boot: "{{ item.mount_on_boot }}"
 
     - name: "Output from lsblk"

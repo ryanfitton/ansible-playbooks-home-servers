@@ -7,7 +7,10 @@ drive_mounts:
   - name: "/dev/sdb"
     mount_path: "{{ drive_mount_root }}/nvrdata/"
     file_system_type: "ext4"
+    options: "defaults"
+    state: mounted
     mount_on_boot: true
+    format_drive: true
 
 
 # Shared media locations with disk from Hypervisor

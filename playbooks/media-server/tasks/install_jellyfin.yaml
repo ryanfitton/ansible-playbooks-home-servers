@@ -7,7 +7,7 @@
 - name: Create group for Jellyfin
   become: true
   ansible.builtin.group:
-    name: "{{ Jellyfin_group }}"
+    name: "{{ jellyfin_group }}"
     state: present
 
 # Add the user with a primary group
@@ -33,9 +33,19 @@
 
 - name: Install Jellyfin
   become: true
-  shell: curl https://repo.jellyfin.org/install-debuntu.sh | sudo bash
+  expect:
+    command: sh -c "curl https://repo.jellyfin.org/install-debuntu.sh | sudo bash"
+    responses:
+      'If this looks correct, press <Enter> now to continue installing Jellyfin. ': 'Y'
+    echo: yes
+    timeout: 600
+  register: jellyfin_install
   notify:
     - restart jellyfin
+
+- name: Result from Jellyfin install
+  debug: 
+    msg: "{{ jellyfin_install.stdout }}"
 
 - name: "Force all notified handlers to run at this point, not waiting for normal sync points"
   ansible.builtin.meta: flush_handlers

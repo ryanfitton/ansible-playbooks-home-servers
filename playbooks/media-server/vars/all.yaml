@@ -4,10 +4,13 @@ drive_mount_root: "/datastore"    # Drives should be mounted in this folder
 
 # List of drives to mount. These drives should be assigned to this host from the hypervisor.
 drive_mounts:
-  - name: "/dev/sdb"
+  - name: "//10.0.10.103/nasdata"
     mount_path: "{{ drive_mount_root }}/mediadata/"
-    file_system_type: "ext4"
+    file_system_type: "cifs"
+    options: 'username=system,password=kVR91uFaf0'
+    state: mounted
     mount_on_boot: true
+    format_drive: false
 
 
 # Shared media locations with disk from Hypervisor

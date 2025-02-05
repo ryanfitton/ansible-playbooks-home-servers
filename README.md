@@ -258,6 +258,9 @@ You will need to attach the additional storage disk from the hypervisor to this 
 Setup URL:
 http://10.0.10.102:8096/
 
+jellyfin
+jellyfin
+
 Setup configuration for shares in `playbooks/media-server/vars/all.yaml`
 
 You will need to attach the additional storage disk from the hypervisor to this node. `/dev/sdb` mounts in the host to `/datastore/mediadata`.
