@@ -54,5 +54,16 @@
     - name: "Result from lsblk"
       debug: msg="{{ lsblk_output.stdout }}"
 
+    - name: "Output from df -h"
+      become: true
+      shell:
+        cmd: df -h
+      register: df_output
+      ignore_errors: true
+      changed_when: true
+
+    - name: "Result from df -h"
+      debug: msg="{{ df_output.stdout }}"
+
     - name: "Force all notified handlers to run at this point, not waiting for normal sync points"
       ansible.builtin.meta: flush_handlers
