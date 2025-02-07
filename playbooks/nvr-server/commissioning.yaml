@@ -40,19 +40,44 @@
             #   device: usb
             cpu1:
               type: cpu
-              num_threads: 4
+              num_threads: 3
 
           # Object settings used if detection is enabled
           objects:
+            # Objects to track https://docs.frigate.video/configuration/objects/
             track:
               - person
-              - vehicle
-              - animal
+              - bicycle
+              - car
+              - motorcycle
+              - bus
+              - bird
+              - cat
+              - dog
+              - horse
+              - sheep
+              - cow
+              - hat
+              - backpack
+              - bottle
             filters:
               person:
                 min_area: 2000
                 max_area: 100000
                 threshold: 0.75
+
+          # Review settings
+          review:
+            # These labels will be classed as 'alerts' and require urgent review. Anything else not in this list will be marked as a detection.
+            alerts:
+              labels:
+                - person
+                - bicycle
+                - car
+                - motorcycle
+                - bus
+                - cat
+                - dog
 
           # Snapshot settings
           snapshots:
@@ -69,7 +94,7 @@
               # Optional: Number of days to retain recordings regardless of events (default: shown below)
               # NOTE: This should be set to 0 and retention should be defined in events section below
               #       if you only want to retain recordings of events.
-              days: 0 # Zero days here as we're only retaining recordings of events with motion instead - futher down in this config
+              days: 0 # Zero days here as we're only retaining recordings of events with Detection instead - futher down in this config
               # Optional: Mode for retention. Available options are: all, motion, and active_objects
               #   all - save all recording segments regardless of activity
               #   motion - save all recordings segments with any detected motion
@@ -77,7 +102,7 @@
               # NOTE: this mode only applies when the days setting above is greater than 0
               mode: all
 
-            # Optional: Event recording settings
+            # Optional: Detection Event recording settings
             events:
               # Optional: Number of seconds before the event to include (default: shown below)
               pre_capture: 5
@@ -87,16 +112,15 @@
               retain:
                 # Required: Default retention days for events
                 default: 30
-                # Optional: Mode for retention. (default: shown below)
-                #   all - save all recording segments for events regardless of activity
-                #   motion - save all recordings segments for events with any detected motion
-                #   active_objects - save all recording segments for event with active/moving objects
-                #mode: active_objects  # `active_objects` = When the tracked object is active and moving, not stationary
+                # Optional: Mode of the view. Available options are: objects, motion, and continuous
+                #   objects - if they have had a tracked object within the last 30 seconds
+                #   motion - if motion was detected in the last 30 seconds
+                #   continuous - always
                 mode: motion
                 # Per object retention days
-                objects:
-                  person: 30  # E.g. if person event then keep recording for 30 days
-                  vehicle: 30
+                # objects:
+                #   person: 30  # E.g. if person event then keep recording for 30 days
+                #   vehicle: 30
 
           # Birdseye settings
           birdseye:
@@ -105,35 +129,44 @@
             # Optional: Restream the birdseye view (default: shown below)
             restream: False
             # Optional: Width of the output resolution (default: shown below)
-            width: 1920
+            width: 1280
             # Optional: Height of the output resolution (default: shown below)
-            height: 1080
+            height: 720
             # Optional: Encoding quality of the mpeg1 feed (default: shown below)
             # 1 is the highest quality, and 31 is the lowest. Lower quality feeds utilize less CPU resources.
             quality: 10
             # Optional: Mode of the view. Available options are: objects, motion, and continuous
-            #   objects - cameras are included if they have had a tracked object within the last 30 seconds
-            #   motion - cameras are included if motion was detected in the last 30 seconds
-            #   continuous - all cameras are included always
+            #   objects - if they have had a tracked object within the last 30 seconds
+            #   motion - if motion was detected in the last 30 seconds
+            #   continuous - always
             mode: motion
 
+          # Camera settings
           cameras:
             "IP-CAM-SIDE-LEFT":
               enabled: false
               ffmpeg:
                 inputs:
+                  # High resolution
                   - path: rtsp://u4486654:SkN6HGfaRs@10.0.20.100:554/s0
                     roles:
-                      - detect
                       - record
+                  # Low resolution
+                  - path: rtsp://u4486654:SkN6HGfaRs@10.0.20.100:554/s1
+                    roles:
+                      - detect
             "IP-CAM-FRONT":
               enabled: true
               ffmpeg:
                 inputs:
+                  # High resolution
                   - path: rtsp://u82946431:AF2bgX43dy@10.0.20.101:554/s0
                     roles:
-                      - detect
                       - record
+                  # Low resolution
+                  - path: rtsp://u82946431:AF2bgX43dy@10.0.20.101:554/s1
+                    roles:
+                      - detect
               motion:
                 mask: 
                   - 0.002,0.08,0.13,0.08,0.178,0.038,0.181,0,0.001,0  # Timestamp on camera feed
@@ -145,10 +178,14 @@
               enabled: true
               ffmpeg:
                 inputs:
+                  # High resolution
                   - path: rtsp://u7598642:6RTvJzwE9Y@10.0.20.102:554/s0
                     roles:
-                      - detect
                       - record
+                  # Low resolution
+                  - path: rtsp://u7598642:6RTvJzwE9Y@10.0.20.102:554/s1
+                    roles:
+                      - detect
               motion:
                 mask: 
                   - 0.002,0.078,0.115,0.077,0.171,0.041,0.173,0.003,0.002,0.002 # Timestamp on camera feed
@@ -160,18 +197,26 @@
               enabled: false
               ffmpeg:
                 inputs:
+                  # High resolution
                   - path: rtsp://u9875621:DXV9B7z6jK@10.0.20.103:554/s0
                     roles:
-                      - detect
                       - record
+                  # Low resolution
+                  - path: rtsp://u9875621:DXV9B7z6jK@10.0.20.103:554/s1
+                    roles:
+                      - detect
             "IP-DOORBELL-FRONT":
               enabled: true
               ffmpeg:
                 inputs:
+                  # High resolution
                   - path: rtsp://admin:5cv6z3d29s@10.0.20.104:554
                     roles:
-                      - detect
                       - record
+                  # Low resolution
+                  - path: rtsp://admin:5cv6z3d29s@10.0.20.104:554/ch1/sub/av_stream
+                    roles:
+                      - detect
               motion:
                 mask: 
                   - 0.717,0.72,0.931,0.722,0.957,0.776,0.959,0.817,0.714,0.829  # Timestamp on camera feed
