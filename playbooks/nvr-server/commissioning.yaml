@@ -11,23 +11,112 @@
     - vars/all.yaml
 
   roles:
-    - role: tigattack.frigate_docker      # Install: https://github.com/tigattack/ansible-role-frigate-docker?tab=readme-ov-file#example-playbooks
+    # Install: https://github.com/tigattack/ansible-role-frigate-docker?tab=readme-ov-file#example-playbooks
+    - role: tigattack.frigate_docker
       become: true
       vars:
         frigate_docker_config:
+          # MQTT settings
           mqtt:
-            enabled: true
-          detect:
             enabled: false
+
+          # Motion settings
+          # NOTE: Motion detection is required for object detection
+          motion:
+            enabled: true
+
+          #  Detection settings
+          detect:
+            enabled: true
+
+            # Specify lower resolution for detection
+            width: 720
+            height: 480
+            fps: 10
+
+          detectors:
+            # coral:
+            #   type: edgetpu
+            #   device: usb
+            cpu1:
+              type: cpu
+              num_threads: 4
+
+          # Object settings used if detection is enabled
+          objects:
+            track:
+              - person
+              - vehicle
+              - animal
+            filters:
+              person:
+                min_area: 2000
+                max_area: 100000
+                threshold: 0.75
+
+          # Snapshot settings
+          snapshots:
+            enabled: true # Save a screenshot of each object detected
+            retain:
+              default: 30
+
+          # Recording settings
           record:
             enabled: true
+
+            # Retention settings for recording
             retain:
-              days: 10
+              # Optional: Number of days to retain recordings regardless of events (default: shown below)
+              # NOTE: This should be set to 0 and retention should be defined in events section below
+              #       if you only want to retain recordings of events.
+              days: 0 # Zero days here as we're only retaining recordings of events with motion instead - futher down in this config
+              # Optional: Mode for retention. Available options are: all, motion, and active_objects
+              #   all - save all recording segments regardless of activity
+              #   motion - save all recordings segments with any detected motion
+              #   active_objects - save all recording segments with active/moving objects
+              # NOTE: this mode only applies when the days setting above is greater than 0
               mode: all
+
+            # Optional: Event recording settings
             events:
+              # Optional: Number of seconds before the event to include (default: shown below)
+              pre_capture: 5
+              # Optional: Number of seconds after the event to include (default: shown below)
+              post_capture: 5
+              # Optional: Retention settings for recordings of events
               retain:
+                # Required: Default retention days for events
                 default: 30
+                # Optional: Mode for retention. (default: shown below)
+                #   all - save all recording segments for events regardless of activity
+                #   motion - save all recordings segments for events with any detected motion
+                #   active_objects - save all recording segments for event with active/moving objects
+                #mode: active_objects  # `active_objects` = When the tracked object is active and moving, not stationary
                 mode: motion
+                # Per object retention days
+                objects:
+                  person: 30  # E.g. if person event then keep recording for 30 days
+                  vehicle: 30
+
+          # Birdseye settings
+          birdseye:
+            # Optional: Enable birdseye view (default: shown below)
+            enabled: False
+            # Optional: Restream the birdseye view (default: shown below)
+            restream: False
+            # Optional: Width of the output resolution (default: shown below)
+            width: 1920
+            # Optional: Height of the output resolution (default: shown below)
+            height: 1080
+            # Optional: Encoding quality of the mpeg1 feed (default: shown below)
+            # 1 is the highest quality, and 31 is the lowest. Lower quality feeds utilize less CPU resources.
+            quality: 10
+            # Optional: Mode of the view. Available options are: objects, motion, and continuous
+            #   objects - cameras are included if they have had a tracked object within the last 30 seconds
+            #   motion - cameras are included if motion was detected in the last 30 seconds
+            #   continuous - all cameras are included always
+            mode: motion
+
           cameras:
             "IP-CAM-SIDE-LEFT":
               enabled: false
@@ -35,6 +124,7 @@
                 inputs:
                   - path: rtsp://u4486654:SkN6HGfaRs@10.0.20.100:554/s0
                     roles:
+                      - detect
                       - record
             "IP-CAM-FRONT":
               enabled: true
@@ -42,20 +132,37 @@
                 inputs:
                   - path: rtsp://u82946431:AF2bgX43dy@10.0.20.101:554/s0
                     roles:
+                      - detect
                       - record
+              motion:
+                mask: 
+                  - 0.002,0.08,0.13,0.08,0.178,0.038,0.181,0,0.001,0  # Timestamp on camera feed
+                  - 0.19,0.02,0.191,0.239,0.046,0.336,0.079,0.551,0.156,0.515,0.212,0.538,0.219,0.614,0.239,0.749,0.255,0.845,0.384,0.978,0.014,0.986,0.002,0.005,0.168,0 # Left portion incl hanging basket
+                  - 0.952,0.02,0.761,0.983,0.998,0.995,0.995,0.015 # Right portion
+                  - 0.7,0.167,0.617,0.157,0.54,0.137,0.521,0.053,0.563,0.003,0.708,0 # Neighbour car
+                  - 0.274,0.174,0.32,0.232,0.396,0.27,0.424,0.292,0.279,0.387 # Portion of front garden chipping stons
             "IP-CAM-REAR":
               enabled: true
               ffmpeg:
                 inputs:
                   - path: rtsp://u7598642:6RTvJzwE9Y@10.0.20.102:554/s0
                     roles:
+                      - detect
                       - record
+              motion:
+                mask: 
+                  - 0.002,0.078,0.115,0.077,0.171,0.041,0.173,0.003,0.002,0.002 # Timestamp on camera feed
+                  - 0.023,0.329,0.244,0.278,0.602,0.133,0.603,0.078,0.528,0.002,0.003,0.002,0.002,0.196 # Rear garden flower bed
+                  - 0.734,0.99,0.77,0.766,0.853,0.386,0.874,0.276,0.995,0.206,0.995,0.993 # Rear house wall
+                  - 0.355,0.384,0.471,0.329,0.48,0.481,0.449,0.585,0.394,0.549 # Flower pot
+                  - 0.697,0.258,0.836,0.203,0.869,0.241,0.843,0.367,0.77,0.392 # Flower pot and chimnea
             "IP-CAM-SIDE-RIGHT":
               enabled: false
               ffmpeg:
                 inputs:
                   - path: rtsp://u9875621:DXV9B7z6jK@10.0.20.103:554/s0
                     roles:
+                      - detect
                       - record
             "IP-DOORBELL-FRONT":
               enabled: true
@@ -63,7 +170,15 @@
                 inputs:
                   - path: rtsp://admin:5cv6z3d29s@10.0.20.104:554
                     roles:
+                      - detect
                       - record
+              motion:
+                mask: 
+                  - 0.717,0.72,0.931,0.722,0.957,0.776,0.959,0.817,0.714,0.829  # Timestamp on camera feed
+                  - 0.009,0.005,0.228,0.017,0.296,0.108,0.296,0.669,0.145,0.79,0.14,0.352,0.171,0.104,0.174,0.051,0.107,0.073,0.04,0.319,0,0.295 # Window and porch light
+                  - 0.342,0.515,0.483,0.48,0.485,0.44,0.71,0.401,0.759,0.642,0.995,0.783,1,0.157,0.998,0.005,0.36,0.003 # Hanging basket and neighbour properties
+
+        # Docker settings
         frigate_docker_privileged: true
         frigate_docker_storage_use_docker_volume: false
         frigate_docker_storage_bind_path: "{{ frigate_media_root }}"

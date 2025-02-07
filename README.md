@@ -291,6 +291,9 @@ admin
 See password in docs:
 docker logs frigate
 
+Continuous recording:
+Uses around 170GB per day
+2130 GB Around 12 days of footage
 
 
 ## Print-Server Notes
