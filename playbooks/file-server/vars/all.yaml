@@ -4,6 +4,7 @@ drive_mount_root: "/datastore"    # Drives should be mounted in this folder
 
 # List of drives to mount. These drives should be assigned to this host from the hypervisor.
 drive_mounts:
+  # "/dev/sdb" mounted to "/datastore/nasdata" 
   - name: "/dev/sdb"
     mount_path: "{{ drive_mount_root }}/nasdata/"
     file_system_type: "ext4"
@@ -20,9 +21,10 @@ samba_www_documentroot: "/var/www/samba"
 # List of share directories, these will be stored inside `drive_mount_root`
 # Locations with disk from Hypervisor
 samba_shares:
-  - name: "nasdata"
+  # Create "shared" share which is stored at "/datastore/nasdata/shared/"
+  - name: "shared"
     comment: "Shared media library. Music, Photos and Video."
-    path: "{{ drive_mount_root }}/nasdata/"
+    path: "{{ drive_mount_root }}/nasdata/shared/"
     owner: "root"
     group: "users"
     read_only: "no"
@@ -35,6 +37,22 @@ samba_shares:
     directory_mode: "0777"
     force_directory_mode: "0777"
     setype: "samba_share_t"
+  # Create "ryan" share which is stored at "/datastore/nasdata/ryan/"
+  #   - name: "ryan"
+  #     comment: "Ryan files."
+  #     path: "{{ drive_mount_root }}/nasdata/ryan/"
+  #     owner: "root"
+  #     group: "users"
+  #     read_only: "no"
+  #     browseable: "yes"
+  #     writable: "yes"
+  #     create_mask: "0777"
+  #     create_mode: "0777"
+  #     force_create_mode: "0777"
+  #     directory_mask: "0777"
+  #     directory_mode: "0777"
+  #     force_directory_mode: "0777"
+  #     setype: "samba_share_t"
 
 # Samba Configuration locations
 samba_service: "smbd"
