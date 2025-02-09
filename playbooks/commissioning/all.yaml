@@ -25,6 +25,8 @@
       tags: ['ssh']
     - include_tasks: tasks/remove_default_user.yaml
       tags: ['users']
+    - include_tasks: tasks/install_qemu_guest_agent.yaml  # For virtual machines
+      tags: ['qemu']
     - include_tasks: tasks/set_hostname.yaml
       tags: ['hostname']
     - include_tasks: tasks/configure_timezone.yaml

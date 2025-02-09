@@ -63,6 +63,8 @@ Add your password to the vault password file in `vault/vault.pass`
 ## General Commissioning
 This targets: `all` hosts.
 
+And also runs some Virtual Machine specific tasks for hosts grouped as `virtualmachines`.
+
 All:
 * `ansible-playbook playbooks/commissioning/all.yaml -i inventory.yaml`
 
