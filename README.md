@@ -252,13 +252,13 @@ ssh -i ssh_keys/ryan/id_rsa ryan@10.0.10.103 -p1993
 
 ## File-Server Notes
 
-smb://10.0.10.103/nasdata/
+smb://10.0.10.103/shared/
 
 Use same login accounts as system users
 
 Setup configuration for shares in `playbooks/file-server/vars/all.yaml`
-By default, this share will be created: `nasdata`
-smb://10.0.10.103/nasdata/
+By default, this share will be created: `shared`
+smb://10.0.10.103/shared/
 You will need to attach the additional storage disk from the hypervisor to this node. `/dev/sdb` mounts in the host to `/datastore/nasdata`.
 
 
@@ -273,7 +273,7 @@ jellyfin
 
 Setup configuration for shares in `playbooks/media-server/vars/all.yaml`
 
-You will need to attach the additional storage disk from the hypervisor to this node. `/dev/sdb` mounts in the host to `/datastore/mediadata`.
+Will mount the `shared` from the `File-Server` at `/datastore/mediadata`.
 
 
 
@@ -347,31 +347,3 @@ Unifi - Using Docker
 
 
 
-
-Mount hard drive in vm:
-
-
-fileserver mount hard drive at folder:
-
-/datastore/nasdata/
-
-df -h
-
-lsblk
-
-
-sdb
-
-https://forum.proxmox.com/threads/can-i-create-a-zfs-volume-in-proxmox-then-mount-and-format-it-on-my-vm.71443/
-
-
-specify disk path: /dev/sdb
-check the path is formatted
-mount the datapath to the folder: /datastore/nasdata
-
-format the disk
-
-
-
-
-Then, increase the attached disk size to that in the spreadsheet

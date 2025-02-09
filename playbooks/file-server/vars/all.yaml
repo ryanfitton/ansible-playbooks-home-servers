@@ -56,7 +56,7 @@ samba_shares:
   #     setype: "samba_share_t"
   # Create "bethany" share which is stored at "/datastore/nasdata/bethany/"
   #   - name: "bethany"
-  #     comment: "Ryan files."
+  #     comment: "Bethany files."
   #     path: "{{ drive_mount_root }}/nasdata/bethany/"
   #     owner: "root"
   #     group: "users"
