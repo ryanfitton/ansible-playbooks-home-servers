@@ -290,8 +290,19 @@ Logins;
 admin
 965dd90396768a54c404e1ebafb2f9f8
 
-See password in docs:
-docker logs frigate
+See Docker logs, you can find the password in the logs:
+`sudo docker logs frigate`
+
+To update, login to the container via SSH:
+  Stop:
+  `sudo docker stop frigate`
+
+  Pull down the latest version:
+  `sudo docker pull ghcr.io/blakeblackshear/frigate:stable`
+
+  Then re-run the the commissioning:
+  `ansible-playbook playbooks/nvr-server/commissioning.yaml -i inventory.yaml`
+
 
 Continuous recording:
 Uses around 170GB per day
@@ -305,7 +316,6 @@ print
 print
 
 Setup configuration for shares in `playbooks/print-server/vars/all.yaml`
-
 
 
 
