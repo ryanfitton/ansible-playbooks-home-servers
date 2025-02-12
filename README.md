@@ -268,7 +268,7 @@ You will need to attach the additional storage disk from the hypervisor to this 
 
 ## Media-Server Notes
 Setup URL:
-http://10.0.10.102:8096/
+http://10.0.10.107:8096/
 
 jellyfin
 jellyfin

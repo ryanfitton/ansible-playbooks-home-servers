@@ -7,7 +7,7 @@ PrintServers:
 MediaServers:
   hosts:
     media-server-host01:
-      ansible_host: 10.0.10.102
+      ansible_host: 10.0.10.107
 FileServers:
   hosts:
     file-server-host01:
