@@ -94,7 +94,6 @@ Individual:
 
 All:
 * `ansible-playbook playbooks/proxmox-hypervisor/all.yaml -i inventory.yaml`
-* 
 
 
 ## File-Server
