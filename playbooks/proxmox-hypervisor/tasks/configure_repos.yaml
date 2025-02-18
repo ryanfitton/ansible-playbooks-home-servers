@@ -1,0 +1,18 @@
+---
+# This will configure the Proxmox repos for this node
+# From: https://github.com/lae/ansible-role-proxmox/blob/fcf2119abd9cff204a38cbeebaa4b9d281be4e91/tasks/main.yml
+- name: Remove automatically installed PVE Enterprise repo configuration
+  apt_repository:
+    repo: "{{ item }}"
+    filename: pve-enterprise
+    state: absent
+    update_cache: false
+  with_items: "{{ enterprise_repos }}"
+
+- name: Add PVE Free repo configuration
+  apt_repository:
+    repo: "{{ item }}"
+    filename: proxmox
+    state: absent
+    update_cache: false
+  with_items: "{{ free_repos }}"

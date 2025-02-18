@@ -1,0 +1,23 @@
+---
+# This will install LM Sensors and `mod` Proxmox to show sensor data for this node
+
+- name: "Install the LM Sensors package"
+  become: true
+  ansible.builtin.apt:
+    name: "lm-sensors"
+    state: "present"
+    update_cache: "yes"
+    force_apt_get: "yes"
+
+- name: "Auto detect sensors"
+  become: true
+  ansible.builtin.command: sensors-detect --auto  # noqa no-handler
+  changed_when: true
+
+# From: https://github.com/Meliox/PVE-mods
+- name: "'Mod' Proxmox dashboard GUI to show sensors'"
+  become: true
+  ansible.builtin.shell: |
+    cd / \
+      && wget https://raw.githubusercontent.com/Meliox/PVE-mods/main/pve-mod-gui-sensors.sh \
+      && bash pve-mod-gui-sensors.sh install

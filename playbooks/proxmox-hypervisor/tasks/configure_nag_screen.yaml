@@ -1,0 +1,10 @@
+---
+# This will configure the Proxmox license nag screens for this node
+# From: https://github.com/Meliox/PVE-mods
+- name: "'Mod' Proxmox dashboard nag screens'"
+  become: true
+  ansible.builtin.shell: |
+    cd / \
+      && wget https://raw.githubusercontent.com/Meliox/PVE-mods/main/pve-mod-nag-screen.sh \
+      && bash pve-mod-nag-screen.sh install
+  when: 'remove_nag_screens == true'

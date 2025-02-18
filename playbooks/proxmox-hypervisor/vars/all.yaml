@@ -1,0 +1,13 @@
+---
+# List of Proxmox enterprise repos
+enterprise_repos:
+  - "deb https://enterprise.proxmox.com/debian {{ ansible_distribution_release }} pve-enterprise"
+  - "deb https://enterprise.proxmox.com/debian/pve {{ ansible_distribution_release }} pve-enterprise"
+  - "deb https://enterprise.proxmox.com/debian/ceph-quincy {{ ansible_distribution_release }} enterprise"
+
+# List of Proxmox free repos
+free_repos:
+  - "deb http://download.proxmox.com/debian/pve {{ ansible_distribution_release }} pve-no-subscription"
+
+# Remove nag screens in Proxmox
+remove_nag_screens: true

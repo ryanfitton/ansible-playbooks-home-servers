@@ -85,6 +85,18 @@ For exaple, run on the 'WebServers' group by speciying a value for `target`:
 * Get uptime: `ansible-playbook playbooks/misc/get_uptime.yaml -i inventory.yaml --extra-vars "target=WebServers"`
 
 
+## Proxmox-Hypervisor
+This targets: `hypervisors` hosts.
+
+Individual:
+* `ansible-playbook playbooks/proxmox-hypervisor/commissioning.yaml -i inventory.yaml`
+* `ansible-playbook playbooks/proxmox-hypervisor/configuration.yaml -i inventory.yaml`
+
+All:
+* `ansible-playbook playbooks/proxmox-hypervisor/all.yaml -i inventory.yaml`
+* 
+
+
 ## File-Server
 This targets: `FileServers` hosts.
 
