@@ -1,7 +1,15 @@
 ---
 # This will configure the Proxmox repos for this node
+
+# From: https://github.com/DerDanilo/proxmox-stuff/blob/master/Ansible/pve/tasks/main.yml
+- name: "Add APT PVE signing key"
+  become: true
+  apt_key:
+    url: "{{ repo_key }}"
+
 # From: https://github.com/lae/ansible-role-proxmox/blob/fcf2119abd9cff204a38cbeebaa4b9d281be4e91/tasks/main.yml
 - name: Remove automatically installed PVE Enterprise repo configuration
+  become: true
   apt_repository:
     repo: "{{ item }}"
     filename: pve-enterprise
@@ -10,6 +18,7 @@
   with_items: "{{ enterprise_repos }}"
 
 - name: Add PVE Free repo configuration
+  become: true
   apt_repository:
     repo: "{{ item }}"
     filename: proxmox
