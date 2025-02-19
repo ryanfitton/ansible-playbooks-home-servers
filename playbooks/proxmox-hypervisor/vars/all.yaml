@@ -10,7 +10,7 @@ free_repos:
   - "deb http://download.proxmox.com/debian/pve {{ ansible_distribution_release }} pve-no-subscription"
 
 # PVE Repo signing key
-repo_key: "http://download.proxmox.com/debian/proxmox-ve-release-6.x.gpg"
+repo_key: "http://download.proxmox.com/debian/proxmox-release-{{ ansible_distribution_release }}.gpg"
 
 # Remove nag screens in Proxmox
 remove_nag_screens: true
