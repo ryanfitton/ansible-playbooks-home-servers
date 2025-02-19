@@ -42,4 +42,4 @@
       ignore_errors: false
 
     - debug:
-      msg: "You should enable 'QEMU Guest Agent' for this virtual machine in Proxmox. `virtual machine > Options > QEMU Guest Agent > Enable`"
+        msg: "You should enable 'QEMU Guest Agent' for this virtual machine in Proxmox. `virtual machine > Options > QEMU Guest Agent > Enable`"
