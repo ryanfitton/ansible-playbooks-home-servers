@@ -14,7 +14,7 @@
     repo: "{{ item }}"
     filename: pve-enterprise
     state: absent
-    update_cache: false
+    update_cache: true
   with_items: "{{ enterprise_repos }}"
 
 - name: Add PVE Free repo configuration
@@ -22,6 +22,6 @@
   apt_repository:
     repo: "{{ item }}"
     filename: proxmox
-    state: absent
-    update_cache: false
+    state: present
+    update_cache: true
   with_items: "{{ free_repos }}"

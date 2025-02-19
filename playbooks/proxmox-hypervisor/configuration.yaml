@@ -14,5 +14,7 @@
 #    - role: hypervisor
 
   tasks:
+    - include_tasks: tasks/configure_repos.yaml
+      tags: ['repos']
     - include_tasks: tasks/configure_nag_screen.yaml
       tags: ['nag_screen']
