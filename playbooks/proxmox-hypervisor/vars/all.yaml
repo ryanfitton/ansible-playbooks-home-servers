@@ -14,3 +14,10 @@ repo_key: "http://download.proxmox.com/debian/proxmox-release-{{ ansible_distrib
 
 # Remove nag screens in Proxmox
 remove_nag_screens: true
+
+# For the PVE Backup Cronjob
+backup_destination: "/mnt/pve/nas-host01-backup"    # `backup` SMB Share on `nas-host01`
+backup_max: 5
+backup_opt_folder: false
+backup_healthchecksio: 0  # `0` = False, `1` = True. Should `https://healthchecks.io/` be used?
+backup_healthchecksio_url: "https://hc-ping.com/your_uuid_here"

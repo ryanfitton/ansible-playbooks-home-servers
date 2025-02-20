@@ -18,3 +18,5 @@
       tags: ['repos']
     - include_tasks: tasks/configure_nag_screen.yaml
       tags: ['nag_screen']
+    - include_tasks: tasks/configure_cronjob.yaml
+      tags: ['cron']

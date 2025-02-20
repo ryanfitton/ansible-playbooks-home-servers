@@ -12,5 +12,5 @@
   become: true
   ansible.builtin.cron:
     name: "Jellyfin service check Cronjob"
-    minute: "0"
-    job: "/service_check.sh"
+    minute: "0" # At minute 0 each hour
+    job: "/./service_check.sh"

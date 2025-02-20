@@ -12,8 +12,8 @@
   become: true
   ansible.builtin.cron:
     name: "Nginx service check Cronjob"
-    minute: "0"
-    job: "/service_check_nginx.sh"
+    minute: "0" # At minute 0 each hour
+    job: "/./service_check_nginx.sh"
 
 - name: Copy the PHP service check file for the Cronjob
   become: true
@@ -26,5 +26,5 @@
   become: true
   ansible.builtin.cron:
     name: "PHP service check Cronjob"
-    minute: "0"
-    job: "/service_check_php.sh"
+    minute: "0" # At minute 0 each hour
+    job: "/./service_check_php.sh"

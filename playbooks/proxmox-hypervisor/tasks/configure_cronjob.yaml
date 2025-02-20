@@ -1,0 +1,18 @@
+---
+# This will setup Cronjobs on the server
+
+- name: Copy the PVE config backup file for the Cronjob
+  become: true
+  ansible.builtin.template:
+    src: prox_config_backup.sh
+    dest: "/prox_config_backup.sh"
+    mode: a+x
+
+- name: Setup PVE config backup Cronjob
+  become: true
+  ansible.builtin.cron:
+    name: "Backup Proxomox PVE config Cronjob"
+    minute: "0"   # At 03:00 on Sunday.
+    hour: "3"
+    weekday: "0"
+    job: "/./prox_config_backup.sh"
