@@ -76,7 +76,7 @@ If you wanted to commision a specific group or node listed in `inventory.yaml` u
 ## Misc
 These are intended to be run as seperate Playbooks on manually specified hosts, so there is no option to run as 'all':
 
-For exaple, run on the 'WebServers' group by speciying a value for `target`:
+For exaple, run on the 'WebServers' group by speciying a value for `target` e.g. `target=WebServers` or `target=all`:
 * Ping hosts: `ansible-playbook playbooks/misc/ping.yaml -i inventory.yaml --extra-vars "target=WebServers"`
 * List the inventory: `ansible-playbook playbooks/misc/inventory_info.yaml -i inventory.yaml --extra-vars "target=WebServers"`
 * Update hosts packages: `ansible-playbook playbooks/misc/update_packages.yaml -i inventory.yaml --extra-vars "target=WebServers"`
